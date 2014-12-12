@@ -31,9 +31,9 @@
     "node"
   ],
   "devDependencies": {
-    "docco": "^0.6.3",
     "jscs": "^1.8.1",
     "jshint": "^2.5.10",
+    "mocha": "^2.0.1",
     "semver": "^4.1.0",
     "should": "^4.3.1",
     "uglify-js": "^2.4.16"
