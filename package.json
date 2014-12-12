@@ -25,7 +25,7 @@
     "docs": "docco fvalid.js",
     "lint": "jshint fvalid.js && jscs fvalid.js",
     "prepublish": "uglifyjs -cm -o fvalid.min.js fvalid.js",
-    "test": "mocha --bail --require should"
+    "test": "mocha --require should"
   },
   "engines": [
     "node"
