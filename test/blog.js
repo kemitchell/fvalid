@@ -55,7 +55,7 @@
         return function(x) {
           return re.test(x) ?
             this.ok :
-            this.fail('string matching ' + re.toString());
+            this.expected('string matching ' + re.toString());
         };
       };
 
@@ -69,6 +69,12 @@
       };
 
       var isString = ofType('string');
+
+      var allUpperCase = function(string) {
+        var up = string.toUpperCase();
+        return up === string ?
+          this.ok : this.expected('upper-case string');
+      };
 
       validators.post = _.and(
         isObject,
@@ -91,7 +97,11 @@
           notEmpty,
           _.eachItem(_.and(
             isString,
-            notEmpty
+            notEmpty,
+            _.or(
+              matchesRegEx(/^@[A-Z]+$/),
+              allUpperCase
+            )
           ))
         ))
       );
@@ -103,7 +113,7 @@
           text: 'This is a valid post',
           author: 'John',
           date: '2015-01-01',
-          tags: [ 'Testing' ]
+          tags: [ 'TESTING', '@JOAN' ]
         };
         fvalid.validate(data, validators.post)
           .should.be.empty;
