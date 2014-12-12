@@ -62,7 +62,16 @@
             } ];
           }
         };
-        return validator.call(context, x).map(function(error) {
+
+        var errors = validator.call(context, x);
+
+        if (!Array.isArray(errors)) {
+          throw new Error(
+            'validator function failed to return ' +
+            'this.pass() or this.expected()'
+          );
+        }
+        return errors.map(function(error) {
           // 3. what was found instead.
           error.found = x;
           return error;
@@ -70,18 +79,24 @@
       };
     };
 
-    // Validate data `value` validator function `validator`, returning
-    // an array of errors, if any.
+    // Validate data `value` per validator function `validator`,
+    // returning an array of errors, if any.
     exports.validate = function(value, validator) {
+      if (typeof validator !== 'function') {
+        throw new Error(
+          moduleName + '.validate: second argument must be ' +
+          'a validator function'
+        );
+      }
       return contextualize([], validator)(value);
     };
 
     // Boolean form of `.validate`
     exports.valid = function() {
-      // TODO: Return `false` immediately on first error
       // No errors means valid.
       return exports.validate.apply(this, arguments).length === 0;
     };
+    // TODO: Return `false` from `.valid` immediately on first error
 
     // Build a validator function that:
     // 1. ensures an object has a given property, and
@@ -107,8 +122,14 @@
         .reduce(function(mem, i) {
           return mem.concat(i);
         }, []);
-      // TODO: Optimize .and with one function argument
-      // TODO: Throw an Error if .and receives no functions?
+
+      if (validators.length < 1) {
+        throw new Error(
+          moduleName + '.and requires an array or argument list ' +
+          'of validator functions'
+        );
+      }
+
       return function(x) {
         var thisOfAnd = this;
         return validators.map(function(v) {
@@ -119,6 +140,8 @@
         }, []);
       };
     };
+
+    // TODO: Optimize .and with one function argument
 
     return exports;
   });
