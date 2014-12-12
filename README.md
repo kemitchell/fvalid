@@ -13,6 +13,8 @@ Validate arbitrarily nested objects with functions
   bower install fvalid
 ```
 
+The module has no external dependencies. It utilizes on ECMA-262 5th edition functions like `reduce`.
+
 For example:
 
 ```javascript
