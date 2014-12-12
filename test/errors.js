@@ -29,7 +29,23 @@
       (function() {
         fvalid.validate({}, undefined);
       }).should.throw(
-        'fvalid.validate: second argument must be a validator function'
+        'fvalid.validate requires a validator function argument'
+      );
+    });
+
+    it('.ownProperty without a validator function', function() {
+      (function() {
+        fvalid.ownProperty('name', null);
+      }).should.throw(
+        'fvalid.ownProperty requires a validator function argument'
+      );
+    });
+
+    it('.eachItem without a validator function', function() {
+      (function() {
+        fvalid.eachItem(null);
+      }).should.throw(
+        'fvalid.eachItem requires a validator function argument'
       );
     });
   });

@@ -89,12 +89,7 @@
     // Validate data `value` per validator function `validator`,
     // returning an array of errors, if any.
     exports.validate = function(value, validator) {
-      if (typeof validator !== 'function') {
-        throw new Error(
-          moduleName + '.validate: second argument must be ' +
-          'a validator function'
-        );
-      }
+      validator = ensureValidatorArg('validate', validator);
       return contextualize([], validator)(value);
     };
 
@@ -110,6 +105,7 @@
     // 1. ensures an object has a given property, and
     // 2. validates the property per a given validator function.
     exports.ownProperty = function(name, validator) {
+      validator = ensureValidatorArg('ownProperty', validator);
       return function(x) {
         if (typeof x !== 'object') {
           return this.expected('object');
@@ -122,9 +118,21 @@
       };
     };
 
+    var ensureValidatorArg = function(functionName, arg) {
+      if (typeof arg !== 'function') {
+        throw new Error(
+          moduleName + '.' + functionName +
+          ' requires a validator function argument'
+        );
+      } else {
+        return arg;
+      }
+    };
+
     // Build a validator function that requires a given validator to
     // validate each item of an array.
     exports.eachItem = function(validator) {
+      validator = ensureValidatorArg('eachItem', validator);
       return function(x) {
         var path = this.path;
 
