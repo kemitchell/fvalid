@@ -34,5 +34,14 @@
     "semver": "^4.1.0",
     "should": "^4.3.1",
     "uglify-js": "^2.4.16"
+  },
+  "testling": {
+    "harness": "mocha-tdd",
+    "files": "test/*.js",
+    "browsers": [
+      "ie/8...latest",
+      "chrome/latest",
+      "firefox/latest"
+    ]
   }
 }
