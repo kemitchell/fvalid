@@ -19,20 +19,20 @@
           !Array.isArray(x) &&
           Object.prototype.toString.call(x) === '[object Object]'
         ) ?
-          this.pass() :
+          this.ok :
           this.expected('object');
       };
 
       var isArray = function(x) {
         return Array.isArray(x) ?
-          this.pass() :
+          this.ok :
           this.expected('array');
       };
 
       var ofType = function(type) {
         return function(x) {
           return typeof x === type ?
-            this.pass() :
+            this.ok :
             this.expected(type);
         };
       };
@@ -40,13 +40,13 @@
       var notEmpty = function(x) {
         return x.length === 0 ?
           this.expected('non-empty string') :
-          this.pass();
+          this.ok;
       };
 
       var maxLength = function(len) {
         return function(x) {
           return x.length <= len ?
-            this.pass() :
+            this.ok :
             this.expected('string of ' + len + ' characters or less');
         };
       };
@@ -54,7 +54,7 @@
       var matchesRegEx = function(re) {
         return function(x) {
           return re.test(x) ?
-            this.pass() :
+            this.ok :
             this.fail('string matching ' + re.toString());
         };
       };
@@ -65,7 +65,7 @@
         var date = new Date(args);
         return isNaN(date.getTime()) ?
           this.expected('valid date') :
-          this.pass();
+          this.ok;
       };
 
       var isString = ofType('string');

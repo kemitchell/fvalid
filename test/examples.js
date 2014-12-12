@@ -9,7 +9,7 @@
     describe('simple string matcher', function() {
       var isString = function(x) {
         return typeof x === 'string' ?
-          this.pass() :
+          this.ok :
           this.expected('string');
       };
 
@@ -51,7 +51,7 @@
           }
         }) ?
           this.expected('array without contiguous strings') :
-          this.pass();
+          this.ok;
       };
 
       it('rejects [ "a", "b" ]', function() {

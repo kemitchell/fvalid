@@ -12,7 +12,7 @@
         fvalid.validate({}, validator);
       }).should.throw(
         'validator function failed to return ' +
-        'this.pass() or this.expected()'
+        'this.ok or this.expected()'
       );
     });
 

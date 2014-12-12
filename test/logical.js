@@ -8,13 +8,13 @@
 
     var hasAChar = function(x) {
       return x.indexOf('a') > -1 ?
-        this.pass() :
+        this.ok :
         this.expected('string containing "a"');
     };
 
     var hasBChar = function(x) {
       return x.indexOf('b') > -1 ?
-        this.pass() :
+        this.ok :
         this.expected('string containing "b"');
     };
 

@@ -9,7 +9,7 @@
     describe('each item', function() {
       var validator = fvalid.eachItem(function(x) {
         return x > 3 ?
-          this.pass() :
+          this.ok :
           this.expected('number greater than 3');
       });
 
@@ -49,7 +49,7 @@
     describe('some item', function() {
       var validator = fvalid.someItem(function(x) {
         return x > 3 ?
-          this.pass() :
+          this.ok :
           this.expected('number greater than 3');
       });
 
