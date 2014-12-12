@@ -84,6 +84,8 @@
       };
     };
 
+    // TODO: Add asynchronous validator function support.
+
     // Validate data `value` per validator function `validator`,
     // returning an array of errors, if any.
     exports.validate = function(value, validator) {
