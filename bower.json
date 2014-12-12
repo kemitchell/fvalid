@@ -1,6 +1,6 @@
 {
   "name": "fvalid",
-  "version": "0.0.0-prerelease",
+  "version": "0.0.0-prerelease-2",
   "description": "validate arbitrarily nested objects with functions",
   "keywords": [
     "contracts",
