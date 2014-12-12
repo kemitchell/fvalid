@@ -48,5 +48,12 @@
         'fvalid.eachItem requires a validator function argument'
       );
     });
+    it('.someItem without a validator function', function() {
+      (function() {
+        fvalid.someItem(null);
+      }).should.throw(
+        'fvalid.someItem requires a validator function argument'
+      );
+    });
   });
 })();

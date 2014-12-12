@@ -133,6 +133,7 @@
     // validate each item of an array.
     exports.eachItem = function(validator) {
       validator = ensureValidatorArg('eachItem', validator);
+
       return function(x) {
         var path = this.path;
 
@@ -146,6 +147,39 @@
               contextualize(path.concat(index), validator)(item)
             );
           }, []);
+        }
+      };
+    };
+
+    // Build a validator function that requires a given validator to
+    // validate some item of an array.
+    exports.someItem = function(validator) {
+      validator = ensureValidatorArg('someItem', validator);
+
+      return function(x) {
+        var path = this.path;
+
+        if (!Array.isArray(x) || x.length === 0) {
+          return this.expected('non-empty array');
+        } else {
+          var lastErrors = null;
+          var match = x.some(function(item, index) {
+            // Invoke the validator in the context of each array item.
+            var errors = contextualize(
+              path.concat(index), validator
+            )(item);
+            if (errors.length === 0) {
+              return true;
+            } else {
+              lastErrors = errors;
+              return false;
+            }
+          });
+          if (match) {
+            return this.pass();
+          } else {
+            return this.expected('some ' + lastErrors[0].expected);
+          }
         }
       };
     };

@@ -45,5 +45,38 @@
           } ]);
       });
     });
+
+    describe('some item', function() {
+      var validator = fvalid.someItem(function(x) {
+        return x > 3 ?
+          this.pass() :
+          this.expected('number greater than 3');
+      });
+
+      it('accepts empty array', function() {
+        var data = [];
+        fvalid.validate(data, validator)
+          .should.eql([ {
+            path: [],
+            found: data,
+            expected: 'non-empty array'
+          } ]);
+      });
+
+      it('accepts valid inputs', function() {
+        fvalid.valid([ 1, 2, 6 ], validator)
+          .should.be.true;
+      });
+
+      it('rejects invalid inputs', function() {
+        var data = [ 1, 2, 3 ];
+        fvalid.validate(data, validator)
+          .should.be.eql([ {
+            path: [],
+            found: data,
+            expected: 'some number greater than 3'
+          } ]);
+      });
+    });
   });
 })();
