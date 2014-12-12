@@ -1,6 +1,8 @@
 fvalid.js
 =========
 
+[![build status](https://travis-ci.org/kemitchell/fvalid.svg)](http://travis-ci.org/kemitchell/fvalid)
+
 Validate arbitrarily nested objects with functions
 
 ```bash
