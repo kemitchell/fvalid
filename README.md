@@ -26,7 +26,7 @@ fvalid.valid(good, validator);
 // => true
 
 fvalid.validate(bad, validator);
-// => [ { path: [ 'name' ], expected: 'non-empty string' } ]
+// => [ { path: [ 'name' ], found: '', expected: 'non-empty string' } ]
 fvalid.valid(bad, validator);
 // => false
 ```
