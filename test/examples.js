@@ -9,7 +9,8 @@
     describe('simple string matcher', function() {
       var isString = function(x) {
         return typeof x === 'string' ?
-          this.pass() : this.fail('string');
+          this.pass() :
+          this.expected('string');
       };
 
       it('validates a string', function() {
@@ -21,6 +22,7 @@
         fvalid.validate({}, isString)
           .should.eql([ {
             path: [],
+            found: {},
             expected: 'string'
           } ]);
       });
@@ -28,7 +30,7 @@
 
     describe('property matcher', function() {
       var hasNameProperty = fvalid.ownProperty('name', function(x) {
-        return x === true ? this.pass() : this.fail('true');
+        return x === true ? this.pass() : this.expected('true');
       });
 
       it('validates a matching object', function() {
@@ -37,20 +39,22 @@
       });
 
       it('reports missing property', function() {
-        fvalid.validate({ other: true }, hasNameProperty)
-          .should.eql([
-            {
-              path: [],
-              expected: 'own property "name"'
-            }
-          ]);
+        var data = { other: true };
+        fvalid.validate(data, hasNameProperty)
+          .should.eql([ {
+            path: [],
+            found: data,
+            expected: 'own property "name"'
+          } ]);
       });
 
       it('reports property not matching', function() {
-        fvalid.validate({ name: false }, hasNameProperty)
+        var data = { name: false };
+        fvalid.validate(data, hasNameProperty)
           .should.eql([ {
-              path: [ 'name' ],
-              expected: 'true'
+            path: [ 'name' ],
+            found: data,
+            expected: 'true'
           } ]);
       });
     });
@@ -73,14 +77,15 @@
       });
 
       it('rejects an with the wrong nested property', function() {
-        var o = {
+        var data = {
           a: {
             INVALID: true
           }
         };
-        fvalid.validate(o, validator)
+        fvalid.validate(data, validator)
           .should.eql([ {
             path: [ 'a' ],
+            found: data,
             expected: 'own property "b"'
           } ]);
       });
@@ -91,12 +96,12 @@
         function(x) {
           return x.indexOf('a') > -1 ?
             this.pass() :
-            this.fail('string containing "a"');
+            this.expected('string containing "a"');
         },
         function(x) {
           return x.indexOf('b') > -1 ?
             this.pass() :
-            this.fail('string containing "b"');
+            this.expected('string containing "b"');
         }
       );
 
@@ -105,26 +110,64 @@
       });
 
       it('rejects "arm" with one error', function() {
-        fvalid.validate('arm', validator)
-          .should.eql([
-            {
-              path: [],
-              expected: 'string containing "b"'
-            }
-          ]);
+        var data = 'arm';
+        fvalid.validate(data, validator)
+          .should.eql([ {
+            path: [],
+            found: data,
+            expected: 'string containing "b"'
+          } ]);
       });
 
       it('rejects "gun" with two errors', function() {
-        fvalid.validate('gun', validator)
-          .should.eql([
-            {
-              path: [],
-              expected: 'string containing "a"'
-            }, {
-              path: [],
-              expected: 'string containing "b"'
-            }
-          ]);
+        var data = 'gun';
+        fvalid.validate(data, validator)
+          .should.eql([ {
+            path: [],
+            found: data,
+            expected: 'string containing "a"'
+          }, {
+            path: [],
+            found: data,
+            expected: 'string containing "b"'
+          } ]);
+      });
+    });
+
+    var isString = function(x) {
+      return typeof x === 'string';
+    };
+
+    describe('no contiguous strings', function() {
+      var validator = function(x) {
+        // There are two contiguous strings in an array if,
+        // for some item in the array
+        return x.some(function(current, i, list) {
+          if (
+            // (that is not the first item)
+            i > 0 &&
+            // the item is a string and
+            isString(current) &&
+            // the item before it in the array is also a string.
+            isString(list[i - 1])
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        }) ?
+          this.expected('array without contiguous strings') :
+          this.pass();
+      };
+
+      it('rejects [ "a", "b" ]', function() {
+        fvalid.valid([ 'a', 'b' ], validator)
+          .should.be.false;
+      });
+
+      it('accepts [ "a", null, "b" ]', function() {
+        fvalid.valid([ 'a', null, 'b' ], validator)
+          .should.be.true;
       });
     });
   });
