@@ -1,0 +1,13 @@
+*.min.js
+*.tgz
+.editorconfig
+.gitattributes
+.gitignore
+.jscsrc
+.jshintignore
+.jshintrc
+.npmignore
+bower.json
+contributing.md
+docs/
+test/

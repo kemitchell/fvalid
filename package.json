@@ -1,0 +1,41 @@
+{
+  "name": "fvalid",
+  "version": "0.0.0-prerelease",
+  "description": "validate arbitrarily nested objects with functions",
+  "keywords": [
+    "contracts",
+    "documents",
+    "drafting",
+    "law"
+  ],
+  "license": "Apache-2.0",
+  "main": "fvalid.js",
+  "author": {
+    "name": "Kyle E. Mitchell",
+    "email": "kyle@kemitchell.com",
+    "url": "http://kemitchell.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/commonform/fvalid.js.git"
+  },
+  "homepage": "https://github.com/commonform/fvalid.js",
+  "scripts": {
+    "pre-commit": "npm run lint && npm test && npm run prepublish",
+    "docs": "docco fvalid.js",
+    "lint": "jshint fvalid.js && jscs fvalid.js",
+    "prepublish": "uglifyjs -cm -o fvalid.min.js fvalid.js",
+    "test": "mocha --bail --require should"
+  },
+  "engines": [
+    "node"
+  ],
+  "devDependencies": {
+    "docco": "^0.6.3",
+    "jscs": "^1.8.1",
+    "jshint": "^2.5.10",
+    "semver": "^4.1.0",
+    "should": "^4.3.1",
+    "uglify-js": "^2.4.16"
+  }
+}

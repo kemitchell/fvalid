@@ -1,0 +1,30 @@
+{
+  "name": "fvalid",
+  "version": "0.0.0-prerelease",
+  "description": "validate arbitrarily nested objects with functions",
+  "keywords": [
+    "contracts",
+    "documents",
+    "drafting",
+    "law"
+  ],
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Kyle E. Mitchell",
+    "email": "kyle@kemitchell.com",
+    "url": "http://kemitchell.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/commonform/fvalid.js.git"
+  },
+  "homepage": "https://github.com/commonform/fvalid.js",
+  "main": "fvalid.min.js",
+  "ignore": [
+    "**/.*",
+    "CONTRIBUTING.md",
+    "node_modules/",
+    "package.json",
+    "test/"
+  ]
+}
