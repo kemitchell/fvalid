@@ -82,6 +82,34 @@
       };
     };
 
+    var ensureValidatorArg = function(functionName, arg) {
+      if (typeof arg !== 'function') {
+        throw new Error(
+          moduleName + '.' + functionName + ' requires ' +
+          'a validator function argument'
+        );
+      } else {
+        return arg;
+      }
+    };
+
+    var ensureValidatorArgs = function(functionName, args) {
+      // Flatten ([ function, ... ]) and (function, ...)
+      var validators = Array.prototype.slice.call(args, 0)
+        .reduce(function(mem, i) {
+          return mem.concat(i);
+        }, []);
+      if (validators.length < 1) {
+        throw new Error(
+          moduleName + '.' + functionName + ' requires ' +
+          'an array or argument list of validator functions'
+        );
+      } else {
+        return validators;
+      }
+    };
+
+
     // TODO: Add asynchronous validator function support.
 
     // Validate data `value` per validator function `validator`,
@@ -116,15 +144,39 @@
       };
     };
 
-    var ensureValidatorArg = function(functionName, arg) {
-      if (typeof arg !== 'function') {
+    // Build a validator function that rejects any object properties not
+    // provided in a given whitelist. (That validator will _not_ ensure
+    // that the whitelisted properties exist.)
+    exports.onlyProperties = function() {
+      var onlyNames = Array.prototype.slice.call(arguments, 0)
+        .reduce(function(mem, i) {
+          return mem.concat(i);
+        }, []);
+
+      if (onlyNames.length === 0) {
         throw new Error(
-          moduleName + '.' + functionName +
-          ' requires a validator function argument'
+          moduleName + '.onlyProperties requires ' +
+          'at least one name argument'
         );
-      } else {
-        return arg;
       }
+
+      return function(x) {
+        var path = this.path;
+        var names = Object.getOwnPropertyNames(x);
+        return names.reduce(function(mem, name) {
+          var allowed = onlyNames.indexOf(name) > -1;
+          if (allowed) {
+            return mem;
+          } else {
+            var propertyPath = path.concat(name);
+            return mem.concat(
+              contextualize(propertyPath, function() {
+                return this.expected('no property "' + name + '"');
+              })(x[name])
+            );
+          }
+        }, []);
+      };
     };
 
     // Build a validator function that requires a given validator to
@@ -180,23 +232,6 @@
           }
         }
       };
-    };
-
-    var ensureValidatorArgs = function(functionName, args) {
-      // Flatten ([ function, ... ]) and (function, ...)
-      var validators = Array.prototype.slice.call(args, 0)
-        .reduce(function(mem, i) {
-          return mem.concat(i);
-        }, []);
-      if (validators.length < 1) {
-        throw new Error(
-          moduleName + '.' + functionName +
-          ' requires an array or argument list' +
-          ' of validator functions'
-        );
-      } else {
-        return validators;
-      }
     };
 
     // Conjoins an array or arguments list of validator functions into a

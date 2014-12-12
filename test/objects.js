@@ -67,6 +67,38 @@
             } ]);
         });
       });
+
+      describe('only properties', function() {
+        var validator = fvalid.onlyProperties('a');
+
+        it('accepts valid inputs', function() {
+          fvalid.valid({ a: 1 }, validator)
+            .should.be.true;
+        });
+
+        it('does not check that properties exist', function() {
+          fvalid.valid({}, validator)
+            .should.be.true;
+        });
+
+        it('rejects additional properties', function() {
+          var data = {
+            a: 1,
+            b: 2,
+            c: 3
+          };
+          fvalid.validate(data, validator)
+            .should.eql([ {
+              path: [ 'b' ],
+              found: data.b,
+              expected: 'no property "b"'
+            }, {
+              path: [ 'c' ],
+              found: data.c,
+              expected: 'no property "c"'
+            } ]);
+        });
+      });
     });
   });
 })();
