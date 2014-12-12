@@ -1,1 +1,1 @@
-`npm run lint` and `npm run test` before `git commit`
+`npm run pre-commit` before `git commit`
