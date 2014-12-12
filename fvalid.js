@@ -58,25 +58,29 @@
             return [ {
               // 1. where in the data the problem was found,
               path: path,
+
               // 2. what was expected to be there, and ...
-              expected: expected
+              expected: expected,
+
+              // 3. what was found instead.
+              found: x
             } ];
           }
         };
 
         var errors = validator.call(context, x);
 
+        // Forgot to return something?
         if (!Array.isArray(errors)) {
           throw new Error(
             'validator function failed to return ' +
             'this.pass() or this.expected()'
           );
         }
-        return errors.map(function(error) {
-          // 3. what was found instead.
-          error.found = x;
-          return error;
-        });
+
+        // TODO: Check that validator functions return valid errors.
+
+        return errors;
       };
     };
 

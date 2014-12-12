@@ -31,7 +31,7 @@
         fvalid.validate(data, hasNameProperty)
           .should.eql([ {
             path: [ 'name' ],
-            found: data,
+            found: data.name,
             expected: 'true'
           } ]);
       });
@@ -53,7 +53,7 @@
             .should.be.empty;
         });
 
-        it('rejects an with the wrong nested property', function() {
+        it('rejects object with the wrong nested property', function() {
           var data = {
             a: {
               INVALID: true
@@ -62,7 +62,7 @@
           fvalid.validate(data, validator)
             .should.eql([ {
               path: [ 'a' ],
-              found: data,
+              found: data.a,
               expected: 'own property "b"'
             } ]);
         });
