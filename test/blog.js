@@ -68,24 +68,31 @@
           this.pass();
       };
 
+      var isString = ofType('string');
+
       validators.post = _.and(
         isObject,
         _.ownProperty('text', _.and(
-          ofType('string'),
+          isString,
           notEmpty,
           maxLength(140)
         )),
         _.ownProperty('author', _.and(
-          ofType('string'),
+          isString,
           notEmpty
         )),
         _.ownProperty('date', _.and(
-          ofType('string'),
+          isString,
           matchesRegEx(/^\d\d\d\d-\d\d-\d\d$/),
           validDateString
         )),
         _.ownProperty('tags', _.and(
-          isArray
+          isArray,
+          notEmpty,
+          _.eachItem(_.and(
+            isString,
+            notEmpty
+          ))
         ))
       );
     })();
@@ -96,7 +103,7 @@
           text: 'This is a valid post',
           author: 'John',
           date: '2015-01-01',
-          tags: []
+          tags: [ 'Testing' ]
         };
         fvalid.validate(data, validators.post)
           .should.be.empty;

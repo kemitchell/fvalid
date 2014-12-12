@@ -122,6 +122,26 @@
       };
     };
 
+    // Build a validator function that requires a given validator to
+    // validate each item of an array.
+    exports.eachItem = function(validator) {
+      return function(x) {
+        var path = this.path;
+
+        if (!Array.isArray(x)) {
+          return this.expected('array');
+        } else {
+          return x.reduce(function(mem, item, index) {
+            // Collect errors from application to each array item.
+            return mem.concat(
+              // Invoke the validator in the context of each array item.
+              contextualize(path.concat(index), validator)(item)
+            );
+          }, []);
+        }
+      };
+    };
+
     var ensureValidatorArgs = function(functionName, args) {
       // Flatten ([ function, ... ]) and (function, ...)
       var validators = Array.prototype.slice.call(args, 0)
