@@ -27,9 +27,6 @@
     "prepublish": "uglifyjs -cm -o fvalid.min.js fvalid.js",
     "test": "mocha --require should"
   },
-  "engines": [
-    "node"
-  ],
   "devDependencies": {
     "jscs": "^1.8.1",
     "jshint": "^2.5.10",
