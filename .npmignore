@@ -8,6 +8,7 @@
 .jshintrc
 .npmignore
 bower.json
-contributing.md
+CONTRIBUTING.md
 docs/
 test/
+.travis.yml
