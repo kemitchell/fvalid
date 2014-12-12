@@ -3,6 +3,8 @@ fvalid.js
 
 [![build status](https://travis-ci.org/kemitchell/fvalid.svg)](http://travis-ci.org/kemitchell/fvalid)
 
+[![browser support](https://ci.testling.com/kemitchell/fvalid.png)](https://ci.testling.com/kemitchell/fvalid)
+
 Validate arbitrarily nested objects with functions
 
 ```bash
