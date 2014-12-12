@@ -3,7 +3,7 @@
   'use strict';
 
   var moduleName = 'fvalid';
-  // Functional validation for arbitrarily nested Javascript data
+  // Functional validation for arbitrarily nested JavaScript data
 
   // Universal Module Definition
   (function(root, factory) {
@@ -21,14 +21,14 @@
       version: '0.0.0-prerelease'
     };
 
-    // # Vacubulary Used in Comments
+    // # Vocubulary Used in Comments
     //
     // A _validator function_ is a plain JavaScript closure that take a
     // value to validate as its sole argument and returns the result of
     // either this.pass() or this.expected(String).
     //
     // A _path_ is an array of String and Number indices identifying
-    // a value within a nested Javascript data structure.
+    // a value within a nested JavaScript data structure.
     //
     //    [ 'phoneNumbers', 2 ]
     //
@@ -97,6 +97,7 @@
       // No errors means valid.
       return exports.validate.apply(this, arguments).length === 0;
     };
+
     // TODO: Return `false` from `.valid` immediately on first error
 
     // Build a validator function that:
@@ -152,7 +153,7 @@
       };
     };
 
-    // TODO: Optimize .and with one function argument
+    // TODO: Optimize `.and` with one function argument
 
     // Helper method similar to underscore.pick
     var returnProperty = function(name) {
@@ -213,7 +214,7 @@
           }
         });
 
-        // One of the validatoin functions matched.
+        // One of the validation functions matched.
         if (valid) {
           return this.pass();
         // No validation function matched.
