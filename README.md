@@ -1,10 +1,10 @@
 fvalid.js
 =========
 
-[![NPM verson](https://img.shields.io/npm/v/fvalid.svg)](https://www.npmjs.com/package/fvalid)
-[![build status](https://travis-ci.org/kemitchell/fvalid.svg)](http://travis-ci.org/kemitchell/fvalid)
+[![NPM version](https://img.shields.io/npm/v/fvalid.svg)](https://www.npmjs.com/package/fvalid)
+[![build status](https://travis-ci.org/kemitchell/fvalid.js.svg)](http://travis-ci.org/kemitchell/fvalid.js)
 
-[![browser support](https://ci.testling.com/kemitchell/fvalid.png)](https://ci.testling.com/kemitchell/fvalid)
+[![browser support](https://ci.testling.com/kemitchell/fvalid.js.png)](https://ci.testling.com/kemitchell/fvalid.js)
 
 Validate arbitrarily nested objects with functions
 
