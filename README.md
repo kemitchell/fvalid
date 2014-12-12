@@ -30,3 +30,5 @@ fvalid.validate(bad, validator);
 fvalid.valid(bad, validator);
 // => false
 ```
+
+See also various examples in the [test suite](./test), including for a toy [micro-blog post format](./test/blog.js).
