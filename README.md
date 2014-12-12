@@ -18,7 +18,7 @@ var bad = { name: '' };
 
 var validator = fvalid.ownProperty('name', function(x) {
   return x.length > 0 ?
-    this.pass() :
+    this.ok :
     this.expected('non-empty string');
 });
 
