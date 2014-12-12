@@ -24,7 +24,8 @@
     "pre-commit": "npm run lint && npm test && npm run prepublish",
     "docs": "docco fvalid.js",
     "lint": "jshint fvalid.js && jscs fvalid.js",
-    "prepublish": "uglifyjs -cm -o fvalid.min.js fvalid.js",
+    "build": "uglifyjs -cm -o fvalid.min.js fvalid.js",
+    "prepublish": "npm run build",
     "test": "mocha --require should"
   },
   "devDependencies": {

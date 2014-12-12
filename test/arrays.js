@@ -53,7 +53,7 @@
           this.expected('number greater than 3');
       });
 
-      it('accepts empty array', function() {
+      it('rejects empty array', function() {
         var data = [];
         fvalid.validate(data, validator)
           .should.eql([ {

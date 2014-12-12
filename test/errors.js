@@ -48,11 +48,20 @@
         'fvalid.eachItem requires a validator function argument'
       );
     });
+
     it('.someItem without a validator function', function() {
       (function() {
         fvalid.someItem(null);
       }).should.throw(
         'fvalid.someItem requires a validator function argument'
+      );
+    });
+
+    it('.onlyProperties without any property names', function() {
+      (function() {
+        fvalid.onlyProperties([]);
+      }).should.throw(
+        'fvalid.onlyProperties requires at least one name argument'
       );
     });
   });
