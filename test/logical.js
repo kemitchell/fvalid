@@ -18,6 +18,12 @@
         this.expected('string containing "b"');
     };
 
+    var hasCChar = function(x) {
+      return x.indexOf('c') > -1 ?
+        this.ok :
+        this.expected('string containing "c"');
+    };
+
     describe('"a" and "b" validator', function() {
       var validator = fvalid.all(hasAChar, hasBChar);
 
@@ -51,7 +57,7 @@
     });
 
     describe('"a" or "b" validator', function() {
-      var validator = fvalid.any(hasAChar, hasBChar);
+      var validator = fvalid.any(hasAChar, hasBChar, hasCChar);
 
       it('accepts "apple"', function() {
         fvalid.valid('apple', validator)
@@ -69,7 +75,9 @@
           .should.eql([ {
             path: [],
             found: data,
-            expected: 'string containing "a" or string containing "b"'
+            expected: 'string containing "a", ' +
+              'string containing "b", ' +
+              'or string containing "c"'
           } ]);
       });
     });
