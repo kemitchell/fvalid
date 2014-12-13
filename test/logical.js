@@ -19,7 +19,7 @@
     };
 
     describe('"a" and "b" validator', function() {
-      var validator = fvalid.and(hasAChar, hasBChar);
+      var validator = fvalid.all(hasAChar, hasBChar);
 
       it('validates "banana"', function() {
         fvalid.valid('banana', validator).should.be.true;
@@ -51,7 +51,7 @@
     });
 
     describe('"a" or "b" validator', function() {
-      var validator = fvalid.or(hasAChar, hasBChar);
+      var validator = fvalid.any(hasAChar, hasBChar);
 
       it('accepts "apple"', function() {
         fvalid.valid('apple', validator)

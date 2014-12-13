@@ -18,9 +18,9 @@
 
     it('conjunction of zero validator functions', function() {
       (function() {
-        fvalid.and()
+        fvalid.all();
       }).should.throw(
-        'fvalid.and requires an array or argument list of ' +
+        'fvalid.all requires an array or argument list of ' +
         'validator functions'
       );
     });

@@ -76,29 +76,29 @@
           this.ok : this.expected('upper-case string');
       };
 
-      validators.post = _.and(
+      validators.post = _.all(
         isObject,
-        _.ownProperty('text', _.and(
+        _.ownProperty('text', _.all(
           isString,
           notEmpty,
           maxLength(140)
         )),
-        _.ownProperty('author', _.and(
+        _.ownProperty('author', _.all(
           isString,
           notEmpty
         )),
-        _.ownProperty('date', _.and(
+        _.ownProperty('date', _.all(
           isString,
           matchesRegEx(/^\d\d\d\d-\d\d-\d\d$/),
           validDateString
         )),
-        _.ownProperty('tags', _.and(
+        _.ownProperty('tags', _.all(
           isArray,
           notEmpty,
-          _.eachItem(_.and(
+          _.eachItem(_.all(
             isString,
             notEmpty,
-            _.or(
+            _.any(
               matchesRegEx(/^@[A-Z]+$/),
               allUpperCase
             )

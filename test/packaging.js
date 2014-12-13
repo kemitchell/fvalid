@@ -41,6 +41,7 @@
     });
 
     itMatchesModule('version');
+
     itMatchesModule('name');
   });
 })();
