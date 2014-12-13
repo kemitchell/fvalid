@@ -68,6 +68,30 @@
         });
       });
 
+      describe('of optional properties', function() {
+        var validator = fvalid.optionalProperty('a', function(x) {
+          return x === true ? this.ok : this.expected('true');
+        });
+
+        it('matches an object without the property', function() {
+          var data = {};
+          fvalid.validate(data, validator)
+            .should.be.empty;
+        });
+
+        it('rejects object with a bad value', function() {
+          var data = {
+            a: 'INVALID'
+          };
+          fvalid.validate(data, validator)
+            .should.eql([ {
+              path: [ 'a' ],
+              found: data.a,
+              expected: 'true'
+            } ]);
+        });
+      });
+
       describe('only properties', function() {
         var validator = fvalid.onlyProperties('a');
 

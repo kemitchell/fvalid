@@ -41,6 +41,14 @@
       );
     });
 
+    it('.optionalProperty without a validator function', function() {
+      (function() {
+        fvalid.optionalProperty('name', null);
+      }).should.throw(
+        'fvalid.optionalProperty requires a validator function argument'
+      );
+    });
+
     it('.eachItem without a validator function', function() {
       (function() {
         fvalid.eachItem(null);
