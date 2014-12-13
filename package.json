@@ -20,9 +20,9 @@
   "homepage": "https://github.com/kemitchell/fvalid.js",
   "scripts": {
     "pre-commit": "npm run lint && npm test && npm run prepublish",
-    "docs": "docco -o docs lib/fvalid.js",
+    "docs": "docco --output docs lib/fvalid.js",
     "lint": "jshint lib/fvalid.js test/ && jscs lib/fvalid.js test/",
-    "build": "uglifyjs -cm -o lib/fvalid.min.js lib/fvalid.js",
+    "build": "uglifyjs --compile --mangle --output lib/fvalid.min.js --source-map lib/fvalid.min.map lib/fvalid.js",
     "prepublish": "npm run build",
     "test": "mocha --require should"
   },
