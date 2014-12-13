@@ -8,9 +8,7 @@
 
     describe('each item', function() {
       var validator = fvalid.eachItem(function(x) {
-        return x > 3 ?
-          this.ok :
-          this.expected('number greater than 3');
+        return x > 3 ? true : 'number greater than 3';
       });
 
       it('accepts empty array', function() {
@@ -19,8 +17,8 @@
       });
 
       it('accepts valid inputs', function() {
-        fvalid.valid([ 4, 5, 6 ], validator)
-          .should.be.true;
+        fvalid.validate([ 4, 5, 6 ], validator)
+          .should.be.empty;
       });
 
       it('rejects invalid inputs', function() {
@@ -48,9 +46,7 @@
 
     describe('some item', function() {
       var validator = fvalid.someItem(function(x) {
-        return x > 3 ?
-          this.ok :
-          this.expected('number greater than 3');
+        return x > 3 ? true : 'number greater than 3';
       });
 
       it('rejects empty array', function() {

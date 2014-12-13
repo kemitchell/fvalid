@@ -11,8 +11,7 @@
       (function() {
         fvalid.validate({}, validator);
       }).should.throw(
-        'validator function failed to return ' +
-        'this.ok or this.expected()'
+        'validator function failed to return true or string'
       );
     });
 

@@ -8,7 +8,7 @@
 
     describe('property matching', function() {
       var hasNameProperty = fvalid.ownProperty('name', function(x) {
-        return x === true ? this.ok : this.expected('true');
+        return x === true ? true : 'true';
       });
 
       it('validates a matching object', function() {
@@ -39,7 +39,7 @@
       describe('of nested properties', function() {
         var validator = fvalid.ownProperty('a',
           fvalid.ownProperty('b', function() {
-            return this.ok;
+            return true;
           })
         );
 
@@ -70,7 +70,7 @@
 
       describe('of optional properties', function() {
         var validator = fvalid.optionalProperty('a', function(x) {
-          return x === true ? this.ok : this.expected('true');
+          return x === true ? true : 'true';
         });
 
         it('matches an object without the property', function() {

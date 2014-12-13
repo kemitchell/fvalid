@@ -8,9 +8,7 @@
 
     describe('simple string matcher', function() {
       var isString = function(x) {
-        return typeof x === 'string' ?
-          this.ok :
-          this.expected('string');
+        return typeof x === 'string' ? true : 'string';
       };
 
       it('validates a string', function() {
@@ -49,9 +47,7 @@
           } else {
             return false;
           }
-        }) ?
-          this.expected('array without contiguous strings') :
-          this.ok;
+        }) ? 'array without contiguous strings' : true;
       };
 
       it('rejects [ "a", "b" ]', function() {

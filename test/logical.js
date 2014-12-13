@@ -7,21 +7,15 @@
     var fvalid = require('../lib/fvalid');
 
     var hasAChar = function(x) {
-      return x.indexOf('a') > -1 ?
-        this.ok :
-        this.expected('string containing "a"');
+      return x.indexOf('a') > -1 ? true : 'string containing "a"';
     };
 
     var hasBChar = function(x) {
-      return x.indexOf('b') > -1 ?
-        this.ok :
-        this.expected('string containing "b"');
+      return x.indexOf('b') > -1 ? true : 'string containing "b"';
     };
 
     var hasCChar = function(x) {
-      return x.indexOf('c') > -1 ?
-        this.ok :
-        this.expected('string containing "c"');
+      return x.indexOf('c') > -1 ? true : 'string containing "c"';
     };
 
     describe('"a" and "b" validator', function() {

@@ -18,44 +18,34 @@
           x &&
           !Array.isArray(x) &&
           Object.prototype.toString.call(x) === '[object Object]'
-        ) ?
-          this.ok :
-          this.expected('object');
+        ) ? true : 'object';
       };
 
       var isArray = function(x) {
-        return Array.isArray(x) ?
-          this.ok :
-          this.expected('array');
+        return Array.isArray(x) ? true : 'array';
       };
 
       var ofType = function(type) {
         return function(x) {
-          return typeof x === type ?
-            this.ok :
-            this.expected(type);
+          return typeof x === type ? true : type;
         };
       };
 
       var notEmpty = function(x) {
-        return x.length === 0 ?
-          this.expected('non-empty string') :
-          this.ok;
+        return x.length === 0 ? 'non-empty string' : true;
       };
 
       var maxLength = function(len) {
         return function(x) {
           return x.length <= len ?
-            this.ok :
-            this.expected('string of ' + len + ' characters or less');
+            true : 'string of ' + len + ' characters or less';
         };
       };
 
       var matchesRegEx = function(re) {
         return function(x) {
           return re.test(x) ?
-            this.ok :
-            this.expected('string matching ' + re.toString());
+            true : 'string matching ' + re.toString();
         };
       };
 
@@ -63,17 +53,14 @@
         var match = /^(\d\d\d\d)-(\d\d)-(\d\d)$/.exec(string);
         var args = match.slice(1, 4).map(Number);
         var date = new Date(args);
-        return isNaN(date.getTime()) ?
-          this.expected('valid date') :
-          this.ok;
+        return isNaN(date.getTime()) ? 'valid date' : true;
       };
 
       var isString = ofType('string');
 
       var allUpperCase = function(string) {
         var up = string.toUpperCase();
-        return up === string ?
-          this.ok : this.expected('upper-case string');
+        return up === string ? true : 'upper-case string';
       };
 
       validators.post = _.all(
