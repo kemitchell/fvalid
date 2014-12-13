@@ -4,7 +4,7 @@
   'use strict';
 
   describe('Objects', function() {
-    var fvalid = require('../fvalid');
+    var fvalid = require('../lib/fvalid');
 
     describe('property matching', function() {
       var hasNameProperty = fvalid.ownProperty('name', function(x) {

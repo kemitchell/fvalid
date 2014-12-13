@@ -4,7 +4,7 @@
   'use strict';
 
   describe('Logical Operations', function() {
-    var fvalid = require('../fvalid');
+    var fvalid = require('../lib/fvalid');
 
     var hasAChar = function(x) {
       return x.indexOf('a') > -1 ?

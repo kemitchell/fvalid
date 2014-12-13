@@ -7,7 +7,7 @@
     "validate"
   ],
   "license": "Apache-2.0",
-  "main": "fvalid.js",
+  "main": "lib/fvalid.js",
   "author": {
     "name": "Kyle E. Mitchell",
     "email": "kyle@kemitchell.com",
@@ -20,9 +20,9 @@
   "homepage": "https://github.com/kemitchell/fvalid.js",
   "scripts": {
     "pre-commit": "npm run lint && npm test && npm run prepublish",
-    "docs": "docco fvalid.js",
-    "lint": "jshint fvalid.js && jscs fvalid.js",
-    "build": "uglifyjs -cm -o fvalid.min.js fvalid.js",
+    "docs": "docco -o docs lib/fvalid.js",
+    "lint": "jshint lib/fvalid.js && jscs lib/fvalid.js",
+    "build": "uglifyjs -cm -o lib/fvalid.min.js lib/fvalid.js",
     "prepublish": "npm run build",
     "test": "mocha --require should"
   },

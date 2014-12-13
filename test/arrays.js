@@ -4,7 +4,7 @@
   'use strict';
 
   describe('Arrays', function() {
-    var fvalid = require('../fvalid');
+    var fvalid = require('../lib/fvalid');
 
     describe('each item', function() {
       var validator = fvalid.eachItem(function(x) {
