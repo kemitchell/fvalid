@@ -7,7 +7,7 @@
     "validate"
   ],
   "license": "Apache-2.0",
-  "main": "lib/fvalid.js",
+  "main": "fvalid.js",
   "author": {
     "name": "Kyle E. Mitchell",
     "email": "kyle@kemitchell.com",
@@ -20,7 +20,7 @@
   "homepage": "https://github.com/kemitchell/fvalid.js",
   "scripts": {
     "pre-commit": "npm run lint && npm test",
-    "lint": "jshint && jscs lib/fvalid.js test/",
+    "lint": "jshint . && jscs fvalid.js test/",
     "test": "mocha --require should"
   },
   "devDependencies": {

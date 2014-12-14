@@ -3,7 +3,7 @@
 (function() {
   'use strict';
 
-  var fvalid = require('../lib/fvalid');
+  var fvalid = require('../fvalid');
 
   describe('Errors for', function() {
     it('validator function that fails to return', function() {

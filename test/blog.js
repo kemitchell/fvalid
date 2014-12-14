@@ -5,7 +5,7 @@
 
   // Long-form examples of validations for a cartoon microblog
   describe('Blog Example', function() {
-    var fvalid = require('../lib/fvalid');
+    var fvalid = require('../fvalid');
 
     var validators = {};
 

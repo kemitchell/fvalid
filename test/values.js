@@ -4,7 +4,7 @@
   'use strict';
 
   describe('Values', function() {
-    var fvalid = require('../lib/fvalid');
+    var fvalid = require('../fvalid');
 
     describe('simple string matcher', function() {
       var isString = function(x) {
