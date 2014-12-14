@@ -18,21 +18,27 @@
           x &&
           !Array.isArray(x) &&
           Object.prototype.toString.call(x) === '[object Object]'
-        ) ? true : 'object';
-      };
-
-      var isArray = function(x) {
-        return Array.isArray(x) ? true : 'array';
+        ) ?
+          true : 'object';
       };
 
       var ofType = function(type) {
         return function(x) {
-          return typeof x === type ? true : type;
+          return typeof x === type ?
+            true : type;
         };
       };
 
-      var notEmpty = function(x) {
-        return x.length === 0 ? 'non-empty string' : true;
+      var isString = ofType('string');
+
+      var nonEmptyString = function(x) {
+        return typeof x === 'string' && x.length === 0 ?
+          'non-empty string' : true;
+      };
+
+      var nonEmptyArray = function(x) {
+        return Array.isArray(x) && x.length === 0 ?
+          'non-empty array' : true;
       };
 
       var maxLength = function(len) {
@@ -53,43 +59,40 @@
         var match = /^(\d\d\d\d)-(\d\d)-(\d\d)$/.exec(string);
         var args = match.slice(1, 4).map(Number);
         var date = new Date(args);
-        return isNaN(date.getTime()) ? 'valid date' : true;
+        return isNaN(date.getTime()) ?
+          'valid date' : true;
       };
 
-      var isString = ofType('string');
-
       var allUpperCase = function(string) {
-        var up = string.toUpperCase();
-        return up === string ? true : 'upper-case string';
+        return string.toUpperCase() === string ?
+          true : 'upper-case string';
       };
 
       validators.post = _.all(
         isObject,
-        _.ownProperty('text', _.all(
-          isString,
-          notEmpty,
-          maxLength(140)
-        )),
-        _.ownProperty('author', _.all(
-          isString,
-          notEmpty
-        )),
+
+        _.ownProperty('author', nonEmptyString),
+
         _.ownProperty('date', _.all(
           isString,
           matchesRegEx(/^\d\d\d\d-\d\d-\d\d$/),
           validDateString
         )),
+
         _.ownProperty('tags', _.all(
-          isArray,
-          notEmpty,
+          nonEmptyArray,
           _.eachItem(_.all(
-            isString,
-            notEmpty,
+            nonEmptyString,
             _.any(
               matchesRegEx(/^@[A-Z]+$/),
               allUpperCase
             )
           ))
+        )),
+
+        _.ownProperty('text', _.all(
+          nonEmptyString,
+          maxLength(140)
         ))
       );
     })();
@@ -97,10 +100,10 @@
     describe('post', function() {
       it('matches a valid example', function() {
         var data = {
-          text: 'This is a valid post',
           author: 'John',
           date: '2015-01-01',
-          tags: [ 'TESTING', '@JOAN' ]
+          tags: [ 'TESTING', '@JOAN' ],
+          text: [ 'This is a valid post' ]
         };
         fvalid.validate(data, validators.post)
           .should.be.empty;
@@ -108,24 +111,26 @@
 
       it('rejects an invalid example', function() {
         var data = {
-          text: 'This is a valid post',
           author: '',
-          date: '2015-01-32'
+          date: '2015-01-32',
+          text: 'This is a valid post'
         };
         fvalid.validate(data, validators.post)
-          .should.eql([ {
-            path: [ 'author' ],
-            found: '',
-            expected: 'non-empty string'
-          }, {
-            path: [ 'date' ],
-            found: '2015-01-32',
-            expected: 'valid date'
-          }, {
-            path: [],
-            found: data,
-            expected: 'own property "tags"'
-          } ]);
+          .should.eql([
+            {
+              path: [ 'author' ],
+              found: '',
+              expected: [ 'non-empty string' ]
+            }, {
+              path: [ 'date' ],
+              found: '2015-01-32',
+              expected: [ 'valid date' ]
+            }, {
+              path: [],
+              found: data,
+              expected: [ 'own property "tags"' ]
+            }
+          ]);
       });
     });
   });

@@ -26,7 +26,7 @@
           .should.be.eql([ {
             path: [ 0 ],
             found: 3,
-            expected: 'number greater than 3'
+            expected: [ 'number greater than 3' ]
           } ]);
       });
 
@@ -35,11 +35,11 @@
           .should.be.eql([ {
             path: [ 0 ],
             found: 3,
-            expected: 'number greater than 3'
+            expected: [ 'number greater than 3' ]
           }, {
             path: [ 2 ],
             found: 1,
-            expected: 'number greater than 3'
+            expected: [ 'number greater than 3' ]
           } ]);
       });
     });
@@ -55,7 +55,7 @@
           .should.eql([ {
             path: [],
             found: data,
-            expected: 'non-empty array'
+            expected: [ 'non-empty array' ]
           } ]);
       });
 
@@ -70,7 +70,7 @@
           .should.be.eql([ {
             path: [],
             found: data,
-            expected: 'some number greater than 3'
+            expected: [ 'some number greater than 3' ]
           } ]);
       });
     });

@@ -31,7 +31,7 @@
           .should.eql([ {
             path: [],
             found: data,
-            expected: 'string containing "b"'
+            expected: [ 'string containing "b"' ]
           } ]);
       });
 
@@ -41,11 +41,10 @@
           .should.eql([ {
             path: [],
             found: data,
-            expected: 'string containing "a"'
-          }, {
-            path: [],
-            found: data,
-            expected: 'string containing "b"'
+            expected: [
+              'string containing "a"',
+              'string containing "b"'
+            ]
           } ]);
       });
     });
@@ -69,9 +68,13 @@
           .should.eql([ {
             path: [],
             found: data,
-            expected: 'string containing "a", ' +
-              'string containing "b", ' +
-              'or string containing "c"'
+            expected: [ {
+              'any of': [
+                'string containing "a"',
+                'string containing "b"',
+                'string containing "c"'
+              ]
+            } ]
           } ]);
       });
     });

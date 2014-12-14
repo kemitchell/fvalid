@@ -22,7 +22,7 @@
           .should.eql([ {
             path: [],
             found: data,
-            expected: 'own property "name"'
+            expected: [ 'own property "name"' ]
           } ]);
       });
 
@@ -32,7 +32,7 @@
           .should.eql([ {
             path: [ 'name' ],
             found: data.name,
-            expected: 'true'
+            expected: [ 'true' ]
           } ]);
       });
 
@@ -41,7 +41,7 @@
           fvalid.ownProperty('b', function() {
             return true;
           })
-        );
+       );
 
         it('matches an object', function() {
           var o = {
@@ -63,7 +63,7 @@
             .should.eql([ {
               path: [ 'a' ],
               found: data.a,
-              expected: 'own property "b"'
+              expected: [ 'own property "b"' ]
             } ]);
         });
       });
@@ -87,7 +87,7 @@
             .should.eql([ {
               path: [ 'a' ],
               found: data.a,
-              expected: 'true'
+              expected: [ 'true' ]
             } ]);
         });
       });
@@ -115,11 +115,11 @@
             .should.eql([ {
               path: [ 'b' ],
               found: data.b,
-              expected: 'no property "b"'
+              expected: [ 'no property "b"' ]
             }, {
               path: [ 'c' ],
               found: data.c,
-              expected: 'no property "c"'
+              expected: [ 'no property "c"' ]
             } ]);
         });
       });

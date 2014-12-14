@@ -21,7 +21,7 @@
           .should.eql([ {
             path: [],
             found: {},
-            expected: 'string'
+            expected: [ 'string' ]
           } ]);
       });
     });
