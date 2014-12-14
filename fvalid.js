@@ -21,7 +21,7 @@
       version: '0.0.0-prerelease-2'
     };
 
-    // # Vocubulary Used in Comments
+    // # Vocabulary Used in Comments
     //
     // A _validator function_ is a plain JavaScript closure that take a
     // value to validate as its sole argument and returns the result of
@@ -30,34 +30,34 @@
     // A _path_ is an array of String and Number indices identifying
     // a value within a nested JavaScript data structure.
     //
-    //    [ 'phoneNumbers', 2 ]
+    //    [ 'addresses', 2 ]
     //
     // Is the path for the third item of the array value of the
-    // 'phoneNumbers' property of an object being validated.
+    // 'addresses' property of an object being validated.
 
-    var isObject = function(x) {
-      return Object.prototype.toString(x) === '[object Object]' &&
-        Boolean(x) &&
-        !Array.isArray(x);
+    var isObject = function(input) {
+      return Object.prototype.toString(input) === '[object Object]' &&
+        Boolean(input) &&
+        !Array.isArray(input);
     };
 
     var contextualize = function(path, validator) {
-      return function(x) {
-        var result = validator(x, path);
+      return function(input) {
+        var result = validator(input, path);
 
         var wrapExpected = function(expected) {
           return {
             path: path,
-            found: x,
+            found: input,
             expected: [ expected ]
           };
         };
 
-        // `x` is valid input, so return an array of no errors.
+        // `input` is valid input, so return an array of no errors.
         if (result === true) {
           return [];
 
-        // `x` is not valid input.
+        // `input` is not valid input.
         } else if (
           // `result` is a string description of what was expected.
           typeof result === 'string' ||
@@ -69,9 +69,9 @@
 
         // `result` is a list of errors.
         } else if (Array.isArray(result)) {
-          return result.map(function(err) {
-            return typeof err === 'string' ?
-              wrapExpected(err) : err;
+          return result.map(function(error) {
+            return typeof error === 'string' ?
+              wrapExpected(error) : error;
           });
 
         // The validator returned some other value.
@@ -97,8 +97,8 @@
     var ensureValidatorArgs = function(functionName, args) {
       // Flatten ([ function, ... ]) and (function, ...)
       var validators = Array.prototype.slice.call(args, 0)
-        .reduce(function(mem, i) {
-          return mem.concat(i);
+        .reduce(function(output, i) {
+          return output.concat(i);
         }, []);
       if (validators.length < 1) {
         throw new Error(
@@ -132,14 +132,14 @@
     // 2. validates the property per a given validator function.
     exports.ownProperty = function(name, validator) {
       validator = ensureValidatorArg('ownProperty', validator);
-      return function(x, path) {
-        if (typeof x !== 'object') {
-          return 'object';
-        } else if (!x.hasOwnProperty(name)) {
+      return function(input, path) {
+        if (typeof input !== 'object') {
+          return 'object with property ' + JSON.stringify(name);
+        } else if (!input.hasOwnProperty(name)) {
           return 'own property ' + JSON.stringify(name);
         } else {
           var propertyPath = path.concat(name);
-          return contextualize(propertyPath, validator)(x[name]);
+          return contextualize(propertyPath, validator)(input[name]);
         }
       };
     };
@@ -148,25 +148,25 @@
     // if the object has one.
     exports.optionalProperty = function(name, validator) {
       validator = ensureValidatorArg('optionalProperty', validator);
-      return function(x, path) {
-        if (typeof x !== 'object') {
-          return 'object';
-        } else if (!x.hasOwnProperty(name)) {
+      return function(input, path) {
+        if (typeof input !== 'object') {
+          return 'object with property ' + JSON.stringify(name);
+        } else if (!input.hasOwnProperty(name)) {
           return true;
         } else {
           var propertyPath = path.concat(name);
-          return contextualize(propertyPath, validator)(x[name]);
+          return contextualize(propertyPath, validator)(input[name]);
         }
       };
     };
 
     // Build a validator function that rejects any object properties not
-    // provided in a given whitelist. (That validator will _not_ ensure
-    // that the whitelisted properties exist.)
+    // provided in a given white list. (That validator will _not_ ensure
+    // that the white-listed properties exist.)
     exports.onlyProperties = function() {
       var onlyNames = Array.prototype.slice.call(arguments, 0)
-        .reduce(function(mem, i) {
-          return mem.concat(i);
+        .reduce(function(output, i) {
+          return output.concat(i);
         }, []);
 
       if (onlyNames.length === 0) {
@@ -176,21 +176,28 @@
         );
       }
 
-      return function(x, path) {
-        var names = Object.keys(x);
-        return names.reduce(function(mem, name) {
-          var allowed = onlyNames.indexOf(name) > -1;
-          if (allowed) {
-            return mem;
-          } else {
-            var propertyPath = path.concat(name);
-            return mem.concat(
-              contextualize(propertyPath, function() {
-                return 'no property "' + name + '"';
-              })(x[name])
-            );
-          }
-        }, []);
+      return function(input, path) {
+        if (typeof input !== 'object') {
+          return 'object with only the properties ' +
+            onlyNames
+            .map(JSON.stringify)
+            .join(', ');
+        } else {
+          var names = Object.keys(input);
+          return names.reduce(function(output, name) {
+            var allowed = onlyNames.indexOf(name) > -1;
+            if (allowed) {
+              return output;
+            } else {
+              var propertyPath = path.concat(name);
+              return output.concat(
+                contextualize(propertyPath, function() {
+                  return 'no property "' + name + '"';
+                })(input[name])
+              );
+            }
+          }, []);
+        }
       };
     };
 
@@ -199,13 +206,13 @@
     exports.eachItem = function(validator) {
       validator = ensureValidatorArg('eachItem', validator);
 
-      return function(x, path) {
-        if (!Array.isArray(x)) {
+      return function(input, path) {
+        if (!Array.isArray(input)) {
           return 'array';
         } else {
-          return x.reduce(function(mem, item, index) {
+          return input.reduce(function(output, item, index) {
             // Collect errors from application to each array item.
-            return mem.concat(
+            return output.concat(
               // Invoke the validator in the context of each array item.
               contextualize(path.concat(index), validator)(item)
             );
@@ -219,12 +226,12 @@
     exports.someItem = function(validator) {
       validator = ensureValidatorArg('someItem', validator);
 
-      return function(x, path) {
-        if (!Array.isArray(x) || x.length === 0) {
+      return function(input, path) {
+        if (!Array.isArray(input) || input.length === 0) {
           return 'non-empty array';
         } else {
           var lastErrors = null;
-          var match = x.some(function(item, index) {
+          var match = input.some(function(item, index) {
             // Invoke the validator in the context of each array item.
             var errors = contextualize(
               path.concat(index), validator
@@ -245,22 +252,22 @@
       };
     };
 
-    // TODO: Array.prototype.find?
-
+    // Return the first element of an array matching a given predicate.
     var find = function(predicate) {
       var array = Object(this);
-      var thisArg = arguments[1];
-      var value;
       for (var i = 0; i < this.length; i++) {
-        value = array[i];
-        if (predicate.call(thisArg, value, i, array)) {
+        var value = array[i];
+        if (predicate(value, i, array)) {
           return value;
         }
       }
       return undefined;
     };
 
+    // Are two paths the same?
     var samePath = function(a, b) {
+      // Perform a shallow comparison of two arrays that can contain
+      // numbers and strings.
       if (a.length !== b.length) {
         return false;
       }
@@ -274,32 +281,32 @@
     exports.all = function() {
       var validators = ensureValidatorArgs('all', arguments);
 
-      return function(x, path) {
+      return function(input, path) {
         // Bind all the validator functions to the context where `.and`
         // is invoked.
-        var errors = validators.map(function(v) {
-          return contextualize(path, v);
+        var errors = validators.map(function(validator) {
+          return contextualize(path, validator);
         })
         // Collect errors from invoking the validator functions.
-        .reduce(function(mem, v) {
-          return mem.concat(v(x));
+        .reduce(function(output, validator) {
+          return output.concat(validator(input));
         }, []);
 
         if (errors.length === 0) {
           return [];
         } else {
-          return errors.reduce(function(mem, error) {
-            var errorForSamePath = find.call(mem, function(existing) {
+          return errors.reduce(function(output, error) {
+            var errorAtSamePath = find.call(output, function(existing) {
               return samePath(existing.path, error.path);
             });
-            if (errorForSamePath === undefined) {
-              return mem.concat(error);
+            if (errorAtSamePath === undefined) {
+              return output.concat(error);
             } else {
-              var allExpected = errorForSamePath.expected.concat(
+              var allExpected = errorAtSamePath.expected.concat(
                 error.expected
               );
-              errorForSamePath.expected = allExpected;
-              return mem;
+              errorAtSamePath.expected = allExpected;
+              return output;
             }
           }, []);
         }
@@ -320,7 +327,7 @@
     exports.any = function() {
       var validators = ensureValidatorArgs('any', arguments);
 
-      return function(x, path) {
+      return function(input, path) {
         // Used to accumulate all of the errors from all of the
         // validator functions. If none of them match, `.or` will create
         // its own error with `expected` reflecting all of the
@@ -329,13 +336,14 @@
 
         // Enumerate validator functions until we find a match.
         var valid = validators.some(function(v) {
-          var errors = contextualize(path, v)(x);
+          var errors = contextualize(path, v)(input);
 
           // Valid input. Break out of `.some`, since there is no need
           // to collect errors from other validation functions if we
           // have at least one match.
           if (errors.length === 0) {
             return true;
+
           // Not valid input per this validation function.
           } else {
             // Accumulate errors so we can summarize them later if we
@@ -348,21 +356,23 @@
         // One of the validation functions matched.
         if (valid) {
           return true;
+
         // No validation function matched.
         } else {
           // Pull the expectations from the errors generated by all the
           // validator functions.
           var expectations = allErrors
-          .map(returnProperty('expected'))
-          .reduce(function(mem, expectation) {
-            // A single expecation
-            if (expectation.length === 1) {
-              return mem.concat(expectation);
-            // A conjunction
-            } else {
-              return mem.concat([ expectation ]);
-            }
-          });
+            .map(returnProperty('expected'))
+            .reduce(function(output, expectation) {
+              // A single expectation
+              if (expectation.length === 1) {
+                return output.concat(expectation);
+
+              // A conjunction
+              } else {
+                return output.concat([ expectation ]);
+              }
+            });
 
           // Join those expectation messages into one.
           return { any: expectations };
