@@ -8,7 +8,8 @@
 
     describe('property matching', function() {
       var hasNameProperty = fvalid.ownProperty('name', function(x) {
-        return x === true ? true : 'true';
+        return x === true ?
+          true : 'true';
       });
 
       it('validates a matching object', function() {
@@ -70,7 +71,8 @@
 
       describe('of optional properties', function() {
         var validator = fvalid.optionalProperty('a', function(x) {
-          return x === true ? true : 'true';
+          return x === true ?
+            true : 'true';
         });
 
         it('matches an object without the property', function() {
