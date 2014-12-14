@@ -19,11 +19,8 @@
   },
   "homepage": "https://github.com/kemitchell/fvalid.js",
   "scripts": {
-    "pre-commit": "npm run lint && npm test && npm run prepublish",
-    "docs": "docco --output docs lib/fvalid.js",
-    "lint": "jshint lib/fvalid.js test/ && jscs lib/fvalid.js test/",
-    "build": "uglifyjs --compile --mangle --output lib/fvalid.min.js --source-map lib/fvalid.min.map lib/fvalid.js",
-    "prepublish": "npm run build",
+    "pre-commit": "npm run lint && npm test",
+    "lint": "jshint && jscs lib/fvalid.js test/",
     "test": "mocha --require should"
   },
   "devDependencies": {
@@ -31,8 +28,7 @@
     "jshint": "^2.5.10",
     "mocha": "^2.0.1",
     "semver": "^4.1.0",
-    "should": "^4.3.1",
-    "uglify-js": "^2.4.16"
+    "should": "^4.3.1"
   },
   "testling": {
     "harness": "mocha-tdd",

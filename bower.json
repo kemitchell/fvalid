@@ -17,7 +17,7 @@
     "url": "https://github.com/kemitchell/fvalid.js.git"
   },
   "homepage": "https://github.com/kemitchell/fvalid.js",
-  "main": "lib/fvalid.min.js",
+  "main": "lib/fvalid.js",
   "ignore": [
     "**/.*",
     "CONTRIBUTING.md",
