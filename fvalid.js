@@ -1,8 +1,9 @@
-/* globals define, module */
+// fvalid.js
+// =========
+// Functional validation for arbitrarily nested JavaScript data
 (function() {
   'use strict';
 
-  // Functional validation for arbitrarily nested JavaScript data
   var moduleName = 'fvalid';
 
   var fvalid = function() {
@@ -12,30 +13,37 @@
       version: '0.0.0-prerelease-3'
     };
 
-    // # Vocabulary Used in Comments
+    // Vocabulary Used in Comments
+    // ---------------------------
     //
     // A _validator function_ is a plain JavaScript closure that take a
-    // value to validate as its sole argument and returns the result of
-    // either true or a string.
+    // value to validate as its sole argument and returns either `true`
+    // or a string.
     //
-    // A _path_ is an array of String and Number indices identifying
-    // a value within a nested JavaScript data structure.
-    //
-    //    [ 'addresses', 2 ]
-    //
-    // Is the path for the third item of the array value of the
+    // A _path_ is an array of string and number indices identifying a
+    // value within a nested JavaScript data structure. `[ 'addresses',
+    // 2 ]` is the path for the third item of the array value of the
     // 'addresses' property of an object being validated.
 
+    // Utility Functions
+    // -----------------
+
+    // Is the given input a non-array object?
     var isObject = function(input) {
       return Object.prototype.toString(input) === '[object Object]' &&
         Boolean(input) &&
         !Array.isArray(input);
     };
 
+    // Wrap a validator function in logic that ensures errors that it
+    // reports its reports are scoped to the correct path in the object
+    // being validated. This is the crux of `fvalid`.
     var contextualize = function(path, validator) {
       return function(input) {
         var returned = validator(input, path);
 
+        // Create an error object from a string indicating what was
+        // expected at this path in the data being validated.
         var errorWithExpectation = function(expected) {
           return {
             path: path,
@@ -79,6 +87,49 @@
       };
     };
 
+    // TODO: Add asynchronous validator function support.
+
+    // ### Error Generation Helpers
+
+    // Returns the plural or singular form of a noun, depending on the
+    // number of elements in an array.
+    var plural = function(array, singular, plural) {
+      var length = array.length;
+      /* istanbul ignore if */
+      if (length === 0) {
+        throw new Error('array has no elements');
+      } else if (length === 1) {
+        return singular;
+      } else {
+        return plural;
+      }
+    };
+
+    // Creates "A, C, < and | or | ... > C" lists from arrays
+    var conjunctionList = (function() {
+      var COMMA = ',';
+
+      return function(conjunction, array) {
+        conjunction = ' ' + conjunction + ' ';
+        var length = array.length;
+        /* istanbul ignore if */
+        if (length === 0) {
+          throw new Error('cannot create a list of no elements');
+        } else if (length === 1) {
+          return array;
+        } else if (length === 2) {
+          return array[0] + conjunction + array[1];
+        } else {
+          var head = array.slice(0, array.length - 1).join(COMMA + ' ');
+          return head + COMMA + conjunction + array[array.length - 1];
+        }
+      };
+    })();
+
+    // ### Argument Type Checking
+
+    // Ensure that an argument to a function is, as far as the runtime
+    // can tell, a valid validator function.
     var ensureValidatorArgument = function(functionName, argument) {
       if (typeof argument !== 'function') {
         throw new Error(
@@ -90,8 +141,10 @@
       }
     };
 
+    // Ensure that all of the arguments to a function are, as far as the
+    // runtime can tell, either valid validator functions or arrays of
+    // valid validator functions.
     var ensureValidatorArguments = function(functionName, args) {
-      // Flatten ([ function, ... ]) and (function, ...)
       var validators = Array.prototype.slice.call(args, 0)
         .reduce(function(output, i) {
           return output.concat(i);
@@ -106,7 +159,45 @@
       }
     };
 
-    // TODO: Add asynchronous validator function support.
+    // ### Miscellaneous Helper Functions
+
+    // A function akin to Underscore's `_.pick`.
+    var returnProperty = function(name) {
+      return function(o) {
+        return o[name];
+      };
+    };
+
+    // Return the first element of an array matching a given predicate.
+    var find = function(predicate) {
+      var array = Object(this);
+      var length = this.length;
+      for (var index = 0; index < length; index++) {
+        var value = array[index];
+        if (predicate(value, index, array)) {
+          return value;
+        }
+      }
+      return undefined;
+    };
+
+    // TODO: Use ECMA-262 6th edition `Array.prototype.find`.
+
+    // Determine if two paths are the same by performing a shallow
+    // comparison of numbers and strings.
+    var samePath = function(firstPath, secondPath) {
+      if (firstPath.length !== secondPath.length) {
+        return false;
+      }
+      return !firstPath.some(function(element, index) {
+        return element !== secondPath[index];
+      });
+    };
+
+    // API
+    // ---
+
+    // ### Use Validator Functions
 
     // Validate data `value` per validator function `validator`,
     // returning an array of errors, if any.
@@ -123,16 +214,21 @@
 
     // TODO: Return `false` from `.valid` immediately on first error
 
-    // Build a validator function that:
-    // 1. ensures an object has a given property, and
-    // 2. validates the property per a given validator function.
+    // ### Compose Validator Functions
+
+    // #### Objects
+
+    // Build a validator function that ...
     exports.ownProperty = function(name, validator) {
       validator = ensureValidatorArgument('ownProperty', validator);
       return function(input, path) {
+        // ensures the input is an object, ...
         if (!isObject(input)) {
           return 'object with property ' + JSON.stringify(name);
+        // ensure that object has a given property, and ...
         } else if (!input.hasOwnProperty(name)) {
           return 'own property ' + JSON.stringify(name);
+        // validates thje property per a given validator function.
         } else {
           var propertyPath = path.concat(name);
           return contextualize(propertyPath, validator)(input[name]);
@@ -140,17 +236,20 @@
       };
     };
 
-    // Build a validator function that validates the value of a property
-    // if the object has one.
+    // Build a validator function that ...
     exports.optionalProperty = function(name, validator) {
       validator = ensureValidatorArgument(
         'optionalProperty', validator
       );
       return function(input, path) {
+        // ensures the input is an object, ...
         if (!isObject(input)) {
           return 'object with property ' + JSON.stringify(name);
+        // checks whether that object has a given property, and ...
         } else if (!input.hasOwnProperty(name)) {
           return true;
+        // validates that property's value per a given validator
+        // function.
         } else {
           var propertyPath = path.concat(name);
           return contextualize(propertyPath, validator)(input[name]);
@@ -158,43 +257,9 @@
       };
     };
 
-    var plural = function(list, singular, plural) {
-      var length = list.length;
-      // istanbul ignore if
-      if (length === 0) {
-        throw new Error('list has no elements');
-      } else if (length === 1) {
-        return singular;
-      } else {
-        return plural;
-      }
-    };
-
-    // Creates "A, C, and|or|then C" lists from arrays
-    var conjunctionList = (function() {
-      var COMMA = ',';
-
-      return function(conjunction, array) {
-        conjunction = ' ' + conjunction + ' ';
-        var length = array.length;
-        // istanbul ignore if
-        if (length === 0) {
-          throw new Error('cannot create a list of no elements');
-        } else if (length === 1) {
-          return array;
-        } else if (length === 2) {
-          return array[0] + conjunction + array[1];
-        } else {
-          var head = array.slice(0, array.length - 1).join(COMMA + ' ');
-          return head + COMMA + conjunction + array[array.length - 1];
-        }
-      };
-    })();
-
-    // Build a validator function that rejects any object properties not
-    // provided in a given white list. (That validator will _not_ ensure
-    // that the white-listed properties exist.)
+    // Build a validator function that ...
     exports.onlyProperties = function() {
+      // takes a white list of permitted object properties, ...
       var allowedProperties = Array.prototype.slice.call(arguments, 0)
         .reduce(function(output, argument) {
           return output.concat(argument);
@@ -208,6 +273,7 @@
       }
 
       return function(input, path) {
+        // ensures that the input is an object, and ...
         if (!isObject(input)) {
           var quoted = allowedProperties.map(JSON.stringify);
           return 'object with only the ' +
@@ -215,6 +281,8 @@
             conjunctionList('and', quoted);
         } else {
           var names = Object.keys(input);
+          // rejects any properties of that object other than those
+          // permitted.
           return names.reduce(function(output, name) {
             var allowed = allowedProperties.indexOf(name) > -1;
             if (allowed) {
@@ -232,19 +300,22 @@
       };
     };
 
-    // Build a validator function that requires a given validator to
-    // validate each item of an array.
+    // #### Arrays
+
+    // Build a validator function, ...
     exports.eachItem = function(validator) {
+      // with a validator function, ...
       validator = ensureValidatorArgument('eachItem', validator);
 
       return function(input, path) {
+        // that ensures the input is an array and ...
         if (!Array.isArray(input)) {
           return 'array';
         } else {
+          // ensures that each element of that array is valid per the
+          // given validator function.
           return input.reduce(function(output, item, index) {
-            // Collect errors from application to each array item.
             return output.concat(
-              // Invoke the validator in the context of each array item.
               contextualize(path.concat(index), validator)(item)
             );
           }, []);
@@ -252,18 +323,18 @@
       };
     };
 
-    // Build a validator function that requires a given validator to
-    // validate some item of an array.
+    // Build a validator function ...
     exports.someItem = function(validator) {
+      // with a validator function, ...
       validator = ensureValidatorArgument('someItem', validator);
 
       return function(input, path) {
+        // that ensures the input is an array and ...
         if (!Array.isArray(input) || input.length === 0) {
           return 'non-empty array';
         } else {
           var lastErrors = null;
           var match = input.some(function(item, index) {
-            // Invoke the validator in the context of each array item.
             var errors = contextualize(
               path.concat(index), validator
             )(item);
@@ -283,30 +354,7 @@
       };
     };
 
-    // Return the first element of an array matching a given predicate.
-    var find = function(predicate) {
-      var array = Object(this);
-      var length = this.length;
-      for (var index = 0; index < length; index++) {
-        var value = array[index];
-        if (predicate(value, index, array)) {
-          return value;
-        }
-      }
-      return undefined;
-    };
-
-    // Are two paths the same?
-    var samePath = function(firstPath, secondPath) {
-      // Perform a shallow comparison of two arrays that can contain
-      // numbers and strings.
-      if (firstPath.length !== secondPath.length) {
-        return false;
-      }
-      return !firstPath.some(function(element, index) {
-        return element !== secondPath[index];
-      });
-    };
+    // #### Logical Combinators
 
     // Conjoins an array or arguments list of validator functions into a
     // single validator function.
@@ -347,13 +395,6 @@
 
     // TODO: Optimize `.and` with one function argument
 
-    // Helper method similar to underscore.pick
-    var returnProperty = function(name) {
-      return function(o) {
-        return o[name];
-      };
-    };
-
     // Disjoins an array or arguments list of validator functions into a
     // single validator function.
     exports.any = function() {
@@ -371,12 +412,12 @@
           var errors = contextualize(path, validator)(input);
 
           // Valid input. Break out of `.some`, since there is no need
-          // to collect errors from other validation functions if we
+          // to collect errors from other validator functions if we
           // have at least one match.
           if (errors.length === 0) {
             return true;
 
-          // Not valid input per this validation function.
+          // Not valid input per this validator function.
           } else {
             // Accumulate errors so we can summarize them later if we
             // don't find a match.
@@ -385,7 +426,7 @@
           }
         });
 
-        // One of the validation functions matched.
+        // One of the validator functions matched.
         if (valid) {
           return true;
 
@@ -416,7 +457,12 @@
   };
 
   // Universal Module Definition
-  // istanbul ignore next
+  // ---------------------------
+
+  // Export for AMD, Node.js, or if all else fails, to a browser global.
+
+  /* globals define, module */
+  /* istanbul ignore next */
   (function(root, factory) {
     if (typeof define === 'function' && define.amd) {
       define(moduleName, [], factory());
