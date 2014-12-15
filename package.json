@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/kemitchell/fvalid.js",
   "scripts": {
-    "pre-commit": "npm run lint && npm test && npm run coverage",
+    "pre-commit": "npm run lint && npm run coverage",
     "coverage": "istanbul cover _mocha -- --require should && istanbul check-coverage coverage/coverage.json",
     "lint": "jshint . && jscs fvalid.js test/",
     "test": "mocha --require should"
