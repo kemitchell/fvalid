@@ -81,7 +81,7 @@
 
         _.ownProperty('tags', _.all(
           nonEmptyArray,
-          _.eachItem(_.all(
+          _.eachElement(_.all(
             nonEmptyString,
             _.any(
               matchesRegEx(/^@[A-Z]+$/),

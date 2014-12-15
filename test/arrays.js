@@ -7,7 +7,7 @@
 
   describe('Arrays', function() {
     describe('each item', function() {
-      var validator = fvalid.eachItem(function(x) {
+      var validator = fvalid.eachElement(function(x) {
         return x > 3 ?
           true : 'number greater than 3';
       });

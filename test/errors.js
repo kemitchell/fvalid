@@ -59,11 +59,11 @@
       );
     });
 
-    it('.eachItem without a validator function', function() {
+    it('.eachElement without a validator function', function() {
       (function() {
-        fvalid.eachItem(null);
+        fvalid.eachElement(null);
       }).should.throw(
-        'fvalid.eachItem requires a validator function argument'
+        'fvalid.eachElement requires a validator function argument'
       );
     });
 

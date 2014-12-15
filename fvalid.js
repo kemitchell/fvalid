@@ -306,9 +306,9 @@
     // #### Arrays
 
     // Build a validator function, ...
-    exports.eachItem = function(validator) {
+    exports.eachElement = function(validator) {
       // with a validator function, ...
-      validator = ensureValidatorArgument('eachItem', validator);
+      validator = ensureValidatorArgument('eachElement', validator);
 
       return function(input, path) {
         // that ensures the input is an array and ...
