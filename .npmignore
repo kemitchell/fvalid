@@ -2,6 +2,7 @@
 .editorconfig
 .gitattributes
 .gitignore
+.istanbul.yml
 .jscsrc
 .jshintignore
 .jshintrc
@@ -9,5 +10,5 @@
 .travis.yml
 CONTRIBUTING.md
 bower.json
-docs/
+coverage/
 test/

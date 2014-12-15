@@ -22,6 +22,15 @@
           .should.be.empty;
       });
 
+      it('requires an array', function() {
+        fvalid.validate(null, validator)
+          .should.eql([ {
+            path: [],
+            found: null,
+            expected: [ 'array' ]
+          } ]);
+      });
+
       it('rejects invalid inputs', function() {
         fvalid.validate([ 3, 4, 5 ], validator)
           .should.be.eql([ {

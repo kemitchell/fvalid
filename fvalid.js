@@ -2,19 +2,8 @@
 (function() {
   'use strict';
 
-  var moduleName = 'fvalid';
   // Functional validation for arbitrarily nested JavaScript data
-
-  // Universal Module Definition
-  (function(root, factory) {
-    if (typeof define === 'function' && define.amd) {
-      define(moduleName, [], factory());
-    } else if (typeof exports === 'object') {
-      module.exports = factory();
-    } else {
-      root[moduleName] = factory();
-    }
-  })(this, function() {
+  var fvalid = function() {
     // The object to be exported
     var exports = {
       name: moduleName,
@@ -70,8 +59,13 @@
         // `result` is a list of errors.
         } else if (Array.isArray(result)) {
           return result.map(function(error) {
-            return typeof error === 'string' ?
-              wrapExpected(error) : error;
+            if (typeof error === 'string') {
+              throw new Error(
+                'validator returned more than one expectation'
+              );
+            } else {
+              return error;
+            }
           });
 
         // The validator returned some other value.
@@ -133,7 +127,7 @@
     exports.ownProperty = function(name, validator) {
       validator = ensureValidatorArg('ownProperty', validator);
       return function(input, path) {
-        if (typeof input !== 'object') {
+        if (!isObject(input)) {
           return 'object with property ' + JSON.stringify(name);
         } else if (!input.hasOwnProperty(name)) {
           return 'own property ' + JSON.stringify(name);
@@ -149,7 +143,7 @@
     exports.optionalProperty = function(name, validator) {
       validator = ensureValidatorArg('optionalProperty', validator);
       return function(input, path) {
-        if (typeof input !== 'object') {
+        if (!isObject(input)) {
           return 'object with property ' + JSON.stringify(name);
         } else if (!input.hasOwnProperty(name)) {
           return true;
@@ -159,6 +153,32 @@
         }
       };
     };
+
+    var plural = function(list, singular, plural) {
+      return list.length === 1 ?
+        singular : plural;
+    };
+
+    // Creates "A, C, and|or|then C" lists from arrays
+    var conjunctionList = (function() {
+      var COMMA = ',';
+
+      return function(conjunction, array) {
+        conjunction = ' ' + conjunction + ' ';
+        var length = array.length;
+        // istanbul ignore if
+        if (length === 0) {
+          throw new Error('cannot create a list of no elements');
+        } else if (length === 1) {
+          return array;
+        } else if (length === 2) {
+          return array[0] + conjunction + array[1];
+        } else {
+          var head = array.slice(0, array.length - 1).join(COMMA + ' ');
+          return head + COMMA + conjunction + array[array.length - 1];
+        }
+      };
+    })();
 
     // Build a validator function that rejects any object properties not
     // provided in a given white list. (That validator will _not_ ensure
@@ -177,11 +197,10 @@
       }
 
       return function(input, path) {
-        if (typeof input !== 'object') {
-          return 'object with only the properties ' +
-            onlyNames
-            .map(JSON.stringify)
-            .join(', ');
+        if (!isObject(input)) {
+          return 'object with only the ' +
+            plural(onlyNames, 'property', 'properties') + ' ' +
+            conjunctionList('and', onlyNames.map(JSON.stringify));
         } else {
           var names = Object.keys(input);
           return names.reduce(function(output, name) {
@@ -381,5 +400,19 @@
     };
 
     return exports;
-  });
+  };
+
+  var moduleName = 'fvalid';
+
+  // Universal Module Definition
+  // istanbul ignore next
+  (function(root, factory) {
+    if (typeof define === 'function' && define.amd) {
+      define(moduleName, [], factory());
+    } else if (typeof exports === 'object') {
+      module.exports = factory();
+    } else {
+      root[moduleName] = factory();
+    }
+  })(this, fvalid);
 })();

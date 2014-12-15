@@ -7,18 +7,18 @@
     var fvalid = require('../fvalid');
 
     describe('simple string matcher', function() {
-      var isString = function(x) {
+      var validator = function(x) {
         return typeof x === 'string' ?
           true : 'string';
       };
 
       it('validates a string', function() {
-        fvalid.validate('', isString)
+        fvalid.validate('', validator)
           .should.be.empty;
       });
 
       it('rejects an object', function() {
-        fvalid.validate({}, isString)
+        fvalid.validate({}, validator)
           .should.eql([ {
             path: [],
             found: {},

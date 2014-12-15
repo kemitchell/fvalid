@@ -7,19 +7,29 @@
     var fvalid = require('../fvalid');
 
     describe('property matching', function() {
-      var hasNameProperty = fvalid.ownProperty('name', function(x) {
+      var validator = fvalid.ownProperty('name', function(x) {
         return x === true ?
           true : 'true';
       });
 
       it('validates a matching object', function() {
-        fvalid.validate({ name: true }, hasNameProperty)
+        fvalid.validate({ name: true }, validator)
           .should.be.empty;
+      });
+
+      it('reports object expected', function() {
+        var data = null;
+        fvalid.validate(data, validator)
+          .should.eql([ {
+            path: [],
+            found: data,
+            expected: [ 'object with property "name"' ]
+          } ]);
       });
 
       it('reports missing property', function() {
         var data = { other: true };
-        fvalid.validate(data, hasNameProperty)
+        fvalid.validate(data, validator)
           .should.eql([ {
             path: [],
             found: data,
@@ -29,7 +39,7 @@
 
       it('reports property not matching', function() {
         var data = { name: false };
-        fvalid.validate(data, hasNameProperty)
+        fvalid.validate(data, validator)
           .should.eql([ {
             path: [ 'name' ],
             found: data.name,
@@ -81,6 +91,16 @@
             .should.be.empty;
         });
 
+        it('reports object expected', function() {
+          var data = null;
+          fvalid.validate(data, validator)
+            .should.eql([ {
+              path: [],
+              found: data,
+              expected: [ 'object with property "a"' ]
+            } ]);
+        });
+
         it('rejects object with a bad value', function() {
           var data = {
             a: 'INVALID'
@@ -100,6 +120,40 @@
         it('accepts valid inputs', function() {
           fvalid.valid({ a: 1 }, validator)
             .should.be.true;
+        });
+
+        it('expects an object', function() {
+          fvalid.validate(null, validator)
+            .should.eql([ {
+              path: [],
+              found: null,
+              expected: [ 'object with only the property "a"' ]
+            } ]);
+        });
+
+        it('uses correct plurals in error message', function() {
+          fvalid.validate(
+            null,
+            fvalid.onlyProperties('a', 'b')
+          )
+            .should.eql([ {
+              path: [],
+              found: null,
+              expected: [
+                'object with only the properties "a" and "b"'
+              ]
+            } ]);
+          fvalid.validate(
+            null,
+            fvalid.onlyProperties('a', 'b', 'c')
+          )
+            .should.eql([ {
+              path: [],
+              found: null,
+              expected: [
+                'object with only the properties "a", "b", and "c"'
+              ]
+            } ]);
         });
 
         it('does not check that properties exist', function() {

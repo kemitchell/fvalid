@@ -15,6 +15,17 @@
       );
     });
 
+    it('return of more than one expectation string', function() {
+      var validator = function() {
+        return [ 'a', 'b' ];
+      };
+      (function() {
+        fvalid.validate({}, validator);
+      }).should.throw(
+        'validator returned more than one expectation'
+      );
+    });
+
     it('conjunction of zero validator functions', function() {
       (function() {
         fvalid.all();
