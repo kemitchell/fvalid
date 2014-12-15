@@ -3,6 +3,8 @@
   'use strict';
 
   // Functional validation for arbitrarily nested JavaScript data
+  var moduleName = 'fvalid';
+
   var fvalid = function() {
     // The object to be exported
     var exports = {
@@ -32,9 +34,9 @@
 
     var contextualize = function(path, validator) {
       return function(input) {
-        var result = validator(input, path);
+        var returned = validator(input, path);
 
-        var wrapExpected = function(expected) {
+        var errorWithExpectation = function(expected) {
           return {
             path: path,
             found: input,
@@ -43,22 +45,22 @@
         };
 
         // `input` is valid input, so return an array of no errors.
-        if (result === true) {
+        if (returned === true) {
           return [];
 
         // `input` is not valid input.
         } else if (
-          // `result` is a string description of what was expected.
-          typeof result === 'string' ||
-          // `result` lists one of several alternatives, or a value
+          // `returned` is a string description of what was expected.
+          typeof returned === 'string' ||
+          // `returned` lists one of several alternatives, or a value
           // matching several expectations.
-          isObject(result)
+          isObject(returned)
         ) {
-          return [ wrapExpected(result) ];
+          return [ errorWithExpectation(returned) ];
 
-        // `result` is a list of errors.
-        } else if (Array.isArray(result)) {
-          return result.map(function(error) {
+        // `returned` is a list of errors.
+        } else if (Array.isArray(returned)) {
+          return returned.map(function(error) {
             if (typeof error === 'string') {
               throw new Error(
                 'validator returned more than one expectation'
@@ -77,18 +79,18 @@
       };
     };
 
-    var ensureValidatorArg = function(functionName, arg) {
-      if (typeof arg !== 'function') {
+    var ensureValidatorArgument = function(functionName, argument) {
+      if (typeof argument !== 'function') {
         throw new Error(
           moduleName + '.' + functionName + ' requires ' +
           'a validator function argument'
         );
       } else {
-        return arg;
+        return argument;
       }
     };
 
-    var ensureValidatorArgs = function(functionName, args) {
+    var ensureValidatorArguments = function(functionName, args) {
       // Flatten ([ function, ... ]) and (function, ...)
       var validators = Array.prototype.slice.call(args, 0)
         .reduce(function(output, i) {
@@ -109,7 +111,7 @@
     // Validate data `value` per validator function `validator`,
     // returning an array of errors, if any.
     exports.validate = function(value, validator) {
-      validator = ensureValidatorArg('validate', validator);
+      validator = ensureValidatorArgument('validate', validator);
       return contextualize([], validator)(value);
     };
 
@@ -125,7 +127,7 @@
     // 1. ensures an object has a given property, and
     // 2. validates the property per a given validator function.
     exports.ownProperty = function(name, validator) {
-      validator = ensureValidatorArg('ownProperty', validator);
+      validator = ensureValidatorArgument('ownProperty', validator);
       return function(input, path) {
         if (!isObject(input)) {
           return 'object with property ' + JSON.stringify(name);
@@ -141,7 +143,9 @@
     // Build a validator function that validates the value of a property
     // if the object has one.
     exports.optionalProperty = function(name, validator) {
-      validator = ensureValidatorArg('optionalProperty', validator);
+      validator = ensureValidatorArgument(
+        'optionalProperty', validator
+      );
       return function(input, path) {
         if (!isObject(input)) {
           return 'object with property ' + JSON.stringify(name);
@@ -155,8 +159,15 @@
     };
 
     var plural = function(list, singular, plural) {
-      return list.length === 1 ?
-        singular : plural;
+      var length = list.length;
+      // istanbul ignore if
+      if (length === 0) {
+        throw new Error('list has no elements');
+      } else if (length === 1) {
+        return singular;
+      } else {
+        return plural;
+      }
     };
 
     // Creates "A, C, and|or|then C" lists from arrays
@@ -184,12 +195,12 @@
     // provided in a given white list. (That validator will _not_ ensure
     // that the white-listed properties exist.)
     exports.onlyProperties = function() {
-      var onlyNames = Array.prototype.slice.call(arguments, 0)
-        .reduce(function(output, i) {
-          return output.concat(i);
+      var allowedProperties = Array.prototype.slice.call(arguments, 0)
+        .reduce(function(output, argument) {
+          return output.concat(argument);
         }, []);
 
-      if (onlyNames.length === 0) {
+      if (allowedProperties.length === 0) {
         throw new Error(
           moduleName + '.onlyProperties requires ' +
           'at least one name argument'
@@ -198,13 +209,14 @@
 
       return function(input, path) {
         if (!isObject(input)) {
+          var quoted = allowedProperties.map(JSON.stringify);
           return 'object with only the ' +
-            plural(onlyNames, 'property', 'properties') + ' ' +
-            conjunctionList('and', onlyNames.map(JSON.stringify));
+            plural(allowedProperties, 'property', 'properties') + ' ' +
+            conjunctionList('and', quoted);
         } else {
           var names = Object.keys(input);
           return names.reduce(function(output, name) {
-            var allowed = onlyNames.indexOf(name) > -1;
+            var allowed = allowedProperties.indexOf(name) > -1;
             if (allowed) {
               return output;
             } else {
@@ -223,7 +235,7 @@
     // Build a validator function that requires a given validator to
     // validate each item of an array.
     exports.eachItem = function(validator) {
-      validator = ensureValidatorArg('eachItem', validator);
+      validator = ensureValidatorArgument('eachItem', validator);
 
       return function(input, path) {
         if (!Array.isArray(input)) {
@@ -243,7 +255,7 @@
     // Build a validator function that requires a given validator to
     // validate some item of an array.
     exports.someItem = function(validator) {
-      validator = ensureValidatorArg('someItem', validator);
+      validator = ensureValidatorArgument('someItem', validator);
 
       return function(input, path) {
         if (!Array.isArray(input) || input.length === 0) {
@@ -274,9 +286,10 @@
     // Return the first element of an array matching a given predicate.
     var find = function(predicate) {
       var array = Object(this);
-      for (var i = 0; i < this.length; i++) {
-        var value = array[i];
-        if (predicate(value, i, array)) {
+      var length = this.length;
+      for (var index = 0; index < length; index++) {
+        var value = array[index];
+        if (predicate(value, index, array)) {
           return value;
         }
       }
@@ -284,21 +297,21 @@
     };
 
     // Are two paths the same?
-    var samePath = function(a, b) {
+    var samePath = function(firstPath, secondPath) {
       // Perform a shallow comparison of two arrays that can contain
       // numbers and strings.
-      if (a.length !== b.length) {
+      if (firstPath.length !== secondPath.length) {
         return false;
       }
-      return !a.some(function(elem, index) {
-        return elem !== b[index];
+      return !firstPath.some(function(element, index) {
+        return element !== secondPath[index];
       });
     };
 
     // Conjoins an array or arguments list of validator functions into a
     // single validator function.
     exports.all = function() {
-      var validators = ensureValidatorArgs('all', arguments);
+      var validators = ensureValidatorArguments('all', arguments);
 
       return function(input, path) {
         // Bind all the validator functions to the context where `.and`
@@ -344,7 +357,7 @@
     // Disjoins an array or arguments list of validator functions into a
     // single validator function.
     exports.any = function() {
-      var validators = ensureValidatorArgs('any', arguments);
+      var validators = ensureValidatorArguments('any', arguments);
 
       return function(input, path) {
         // Used to accumulate all of the errors from all of the
@@ -354,8 +367,8 @@
         var allErrors = [];
 
         // Enumerate validator functions until we find a match.
-        var valid = validators.some(function(v) {
-          var errors = contextualize(path, v)(input);
+        var valid = validators.some(function(validator) {
+          var errors = contextualize(path, validator)(input);
 
           // Valid input. Break out of `.some`, since there is no need
           // to collect errors from other validation functions if we
@@ -401,8 +414,6 @@
 
     return exports;
   };
-
-  var moduleName = 'fvalid';
 
   // Universal Module Definition
   // istanbul ignore next
