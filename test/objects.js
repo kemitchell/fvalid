@@ -122,11 +122,22 @@
             .should.be.true;
         });
 
-        it('expects an object', function() {
-          fvalid.validate(null, validator)
+        it('rejects null', function() {
+          var data = null;
+          fvalid.validate(data, validator)
             .should.eql([ {
               path: [],
-              found: null,
+              found: data,
+              expected: [ 'object with only the property "a"' ]
+            } ]);
+        });
+
+        it('rejects a string', function() {
+          var data = 'string';
+          fvalid.validate(data, validator)
+            .should.eql([ {
+              path: [],
+              found: data,
               expected: [ 'object with only the property "a"' ]
             } ]);
         });

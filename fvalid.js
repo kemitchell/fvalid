@@ -29,11 +29,14 @@
     // -----------------
 
     // Is the given input a non-array object?
-    var isObject = function(input) {
-      return Object.prototype.toString(input) === '[object Object]' &&
-        Boolean(input) &&
-        !Array.isArray(input);
-    };
+    var isObject = (function() {
+      var toString = Object.prototype.toString;
+      return function(input) {
+        return toString.call(input) === '[object Object]' &&
+          Boolean(input) &&
+          !Array.isArray(input);
+      };
+    })();
 
     // Wrap a validator function in logic that ensures errors that it
     // reports its reports are scoped to the correct path in the object
