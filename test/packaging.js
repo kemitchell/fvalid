@@ -4,11 +4,10 @@
   'use strict';
 
   var semver = require('semver');
-  var path = require('path');
 
   var commonjs = require('../package.json');
   var bower = require('../bower.json');
-  var library = require(path.join(__dirname, '..', commonjs.main));
+  var library = require('../');
 
   var itIsTheSame = function(property) {
     it(property + ' is the same for NPM and Bower', function() {

@@ -3,10 +3,10 @@
 (function() {
   'use strict';
 
+  var fvalid = require('../');
+
   // Long-form examples of validations for a cartoon microblog
   describe('Blog Example', function() {
-    var fvalid = require('../fvalid');
-
     var validators = {};
 
     (function() {

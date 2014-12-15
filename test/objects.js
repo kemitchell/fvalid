@@ -3,9 +3,9 @@
 (function() {
   'use strict';
 
-  describe('Objects', function() {
-    var fvalid = require('../fvalid');
+  var fvalid = require('../');
 
+  describe('Objects', function() {
     describe('property matching', function() {
       var validator = fvalid.ownProperty('name', function(x) {
         return x === true ?

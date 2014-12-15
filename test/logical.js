@@ -3,9 +3,9 @@
 (function() {
   'use strict';
 
-  describe('Logical Operations', function() {
-    var fvalid = require('../fvalid');
+  var fvalid = require('../');
 
+  describe('Logical Operations', function() {
     var hasAChar = function(x) {
       return x.indexOf('a') > -1 ?
         true : 'string containing "a"';

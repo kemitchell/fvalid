@@ -3,9 +3,9 @@
 (function() {
   'use strict';
 
-  describe('Values', function() {
-    var fvalid = require('../fvalid');
+  var fvalid = require('../');
 
+  describe('Values', function() {
     describe('simple string matcher', function() {
       var validator = function(x) {
         return typeof x === 'string' ?

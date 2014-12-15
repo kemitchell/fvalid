@@ -31,14 +31,5 @@
     "mocha": "^2.0.1",
     "semver": "^4.1.0",
     "should": "^4.3.1"
-  },
-  "testling": {
-    "harness": "mocha-tdd",
-    "files": "test/*.js",
-    "browsers": [
-      "ie/8...latest",
-      "chrome/latest",
-      "firefox/latest"
-    ]
   }
 }

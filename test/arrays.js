@@ -3,9 +3,9 @@
 (function() {
   'use strict';
 
-  describe('Arrays', function() {
-    var fvalid = require('../fvalid');
+  var fvalid = require('../');
 
+  describe('Arrays', function() {
     describe('each item', function() {
       var validator = fvalid.eachItem(function(x) {
         return x > 3 ?
