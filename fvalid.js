@@ -327,9 +327,9 @@
     };
 
     // Build a validator function ...
-    exports.someItem = function(validator) {
+    exports.someElement = function(validator) {
       // with a validator function, ...
-      validator = ensureValidatorArgument('someItem', validator);
+      validator = ensureValidatorArgument('someElement', validator);
 
       return function(input, path) {
         // that ensures the input is an array and ...

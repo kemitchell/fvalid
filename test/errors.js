@@ -67,11 +67,11 @@
       );
     });
 
-    it('.someItem without a validator function', function() {
+    it('.someElement without a validator function', function() {
       (function() {
-        fvalid.someItem(null);
+        fvalid.someElement(null);
       }).should.throw(
-        'fvalid.someItem requires a validator function argument'
+        'fvalid.someElement requires a validator function argument'
       );
     });
 

@@ -6,7 +6,7 @@
   var fvalid = require('../');
 
   describe('Arrays', function() {
-    describe('each item', function() {
+    describe('each element', function() {
       var validator = fvalid.eachElement(function(x) {
         return x > 3 ?
           true : 'number greater than 3';
@@ -40,7 +40,7 @@
           } ]);
       });
 
-      it('returns errors for each  invalid item', function() {
+      it('returns errors for each invalid element', function() {
         fvalid.validate([ 3, 4, 1 ], validator)
           .should.be.eql([ {
             path: [ 0 ],
@@ -54,8 +54,8 @@
       });
     });
 
-    describe('some item', function() {
-      var validator = fvalid.someItem(function(x) {
+    describe('some element', function() {
+      var validator = fvalid.someElement(function(x) {
         return x > 3 ?
           true : 'number greater than 3';
       });
