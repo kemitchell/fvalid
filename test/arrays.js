@@ -23,21 +23,27 @@
       });
 
       it('requires an array', function() {
-        fvalid.validate(null, validator)
+        var data = null;
+        fvalid.validate(data, validator)
           .should.eql([ {
             path: [],
-            found: null,
+            found: data,
             expected: [ 'array' ]
           } ]);
+        fvalid.valid(data, validator)
+          .should.be.false;
       });
 
       it('rejects invalid inputs', function() {
-        fvalid.validate([ 3, 4, 5 ], validator)
+        var data = [ 3, 4, 5 ];
+        fvalid.validate(data, validator)
           .should.be.eql([ {
             path: [ 0 ],
             found: 3,
             expected: [ 'number greater than 3' ]
           } ]);
+        fvalid.valid(data, validator)
+          .should.be.false;
       });
 
       it('returns errors for each invalid element', function() {
@@ -68,10 +74,15 @@
             found: data,
             expected: [ 'non-empty array' ]
           } ]);
+        fvalid.valid(data, validator)
+          .should.be.false;
       });
 
       it('accepts valid inputs', function() {
-        fvalid.valid([ 1, 2, 6 ], validator)
+        var data = [ 1, 2, 6 ];
+        fvalid.validate(data, validator)
+          .should.be.empty;
+        fvalid.valid(data, validator)
           .should.be.true;
       });
 
@@ -83,6 +94,8 @@
             found: data,
             expected: [ 'some number greater than 3' ]
           } ]);
+        fvalid.valid(data, validator)
+          .should.be.false;
       });
     });
   });

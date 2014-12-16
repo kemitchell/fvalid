@@ -19,11 +19,14 @@
       var validator = function() {
         return [ 'a', 'b' ];
       };
+      var expectation = 'validator function failed ' +
+        'to return true or string';
       (function() {
         fvalid.validate({}, validator);
-      }).should.throw(
-        'validator returned more than one expectation'
-      );
+      }).should.throw(expectation);
+      (function() {
+        fvalid.valid({}, validator);
+      }).should.throw(expectation);
     });
 
     it('conjunction of zero validator functions', function() {
