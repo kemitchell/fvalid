@@ -2,7 +2,8 @@ fvalid.js
 =========
 
 [![NPM version](https://img.shields.io/npm/v/fvalid.svg)](https://www.npmjs.com/package/fvalid)
-[![build status](https://travis-ci.org/kemitchell/fvalid.js.svg)](http://travis-ci.org/kemitchell/fvalid.js)
+[![Bower version](https://img.shields.io/bower/v/fvalid.svg)](http://bower.io/search/?q=fvalid)
+[![build status](https://img.shields.io/travis/kemitchell/fvalid.js.svg)](http://travis-ci.org/kemitchell/fvalid.js)
 
 Validate arbitrarily nested objects with functions
 
