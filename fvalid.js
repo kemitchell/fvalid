@@ -266,7 +266,8 @@
         // ensures the input is an object, ...
         if (!isObject(input)) {
           return booleanMode ?
-            false : 'object with property ' + JSON.stringify(name);
+            false : 'object with optional property ' +
+              JSON.stringify(name);
         // checks whether that object has a given property, and ...
         } else if (!input.hasOwnProperty(name)) {
           return true;

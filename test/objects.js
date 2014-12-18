@@ -106,7 +106,7 @@
             .should.eql([ {
               path: [],
               found: data,
-              expected: [ 'object with property "alpha"' ]
+              expected: [ 'object with optional property "alpha"' ]
             } ]);
           fvalid.valid(data, validator)
             .should.be.false;
@@ -124,7 +124,7 @@
             .should.eql([ {
               path: [],
               found: data,
-              expected: [ 'object with property "alpha"' ]
+              expected: [ 'object with optional property "alpha"' ]
             } ]);
         });
 
