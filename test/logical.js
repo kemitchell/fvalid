@@ -36,6 +36,8 @@
             found: data,
             expected: [ 'string containing "b"' ]
           } ]);
+        fvalid.valid(data, validator)
+          .should.be.false;
       });
 
       it('rejects "gun" with two errors', function() {
@@ -49,6 +51,8 @@
               'string containing "b"'
             ]
           } ]);
+        fvalid.valid(data, validator)
+          .should.be.false;
       });
     });
 
@@ -79,6 +83,8 @@
               ]
             } ]
           } ]);
+        fvalid.valid(data, validator)
+          .should.be.false;
       });
     });
 
@@ -136,6 +142,8 @@
               ]
             } ]
           } ]);
+        fvalid.valid({ prop: value }, validator)
+          .should.be.false;
       });
     });
   });

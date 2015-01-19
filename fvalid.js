@@ -38,6 +38,9 @@
       };
     })();
 
+    var badResultExpectation = 'validator function failed to return ' +
+      'true or string';
+
     // Wrap a validator function in logic that ensures errors that it
     // reports its reports are scoped to the correct path in the object
     // being validated. This is the crux of `fvalid`.
@@ -80,9 +83,6 @@
 
         // `returned` is a list of errors.
         } else {
-          var badResultExpectation = 'validator function failed ' +
-            'to return true or string';
-
           if (Array.isArray(returned)) {
             if (booleanMode) {
               throw new Error(badResultExpectation);
@@ -473,9 +473,7 @@
         // Enumerate validator functions until we find a match.
         if (booleanMode) {
           return validators.some(function(validator) {
-            return !contextualize(
-              path, validator, booleanMode
-            )(input);
+            return contextualize(path, validator, booleanMode)(input);
           });
         } else {
           // Used to accumulate all of the errors from all of the
@@ -485,7 +483,9 @@
           var allErrors = [];
 
           var valid = validators.some(function(validator) {
-            var errors = contextualize(path, validator)(input);
+            var errors = contextualize(
+              path, validator, booleanMode
+            )(input);
 
             // Valid input. Break out of `.some`, since there is no need
             // to collect errors from other validator functions if we
@@ -524,7 +524,11 @@
               });
 
             // Join those expectation messages into one.
-            return { any: expectations };
+            return [ {
+              path: path,
+              found: input,
+              expected: [ { any: expectations } ]
+            } ];
           }
         }
       };
