@@ -1,6 +1,6 @@
 {
   "name": "fvalid",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "validate nested objects with functions",
   "keywords": [
     "validation",

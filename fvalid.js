@@ -10,7 +10,7 @@
     // The object to be exported
     var exports = {
       name: moduleName,
-      version: '0.0.4'
+      version: '0.0.5'
     };
 
     // Vocabulary Used in Comments
