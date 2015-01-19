@@ -5,7 +5,7 @@ fvalid.js
 [![Bower version](https://img.shields.io/bower/v/fvalid.svg)](http://bower.io/search/?q=fvalid)
 [![build status](https://img.shields.io/travis/kemitchell/fvalid.js.svg)](http://travis-ci.org/kemitchell/fvalid.js)
 
-Validate arbitrarily nested objects with functions
+Validate nested objects with functions
 
 ```bash
 npm install --save-dev fvalid

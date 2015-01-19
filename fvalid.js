@@ -1,6 +1,6 @@
 // fvalid.js
 // =========
-// Functional validation for arbitrarily nested JavaScript data
+// validate nested objects with functions
 (function() {
   'use strict';
 
