@@ -19,11 +19,11 @@
 
       it('rejects an object', function() {
         fvalid.validate({}, validator)
-          .should.eql([ {
+          .should.eql([{
             path: [],
             found: {},
-            expected: [ 'string' ]
-          } ]);
+            expected: ['string']
+          }]);
       });
     });
 
@@ -53,12 +53,12 @@
       };
 
       it('rejects [ "a", "b" ]', function() {
-        fvalid.valid([ 'a', 'b' ], validator)
+        fvalid.valid(['a', 'b'], validator)
           .should.be.false;
       });
 
       it('accepts [ "a", null, "b" ]', function() {
-        fvalid.valid([ 'a', null, 'b' ], validator)
+        fvalid.valid(['a', null, 'b'], validator)
           .should.be.true;
       });
     });

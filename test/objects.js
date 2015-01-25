@@ -12,56 +12,56 @@
           true : 'true';
       });
 
-
       it('rejects non-object values', function() {
         var data = null;
         fvalid.validate(data, validator)
-          .should.eql([ {
+          .should.eql([{
             path: [],
             found: data,
-            expected: [ 'object with property "name"' ]
-          } ]);
+            expected: ['object with property "name"']
+          }]);
         fvalid.valid(data, validator)
           .should.be.false;
       });
 
       it('validates a matching object', function() {
-        fvalid.validate({ name: true }, validator)
+        fvalid.validate({name: true}, validator)
           .should.be.empty;
       });
 
       it('reports object expected', function() {
         var data = null;
         fvalid.validate(data, validator)
-          .should.eql([ {
+          .should.eql([{
             path: [],
             found: data,
-            expected: [ 'object with property "name"' ]
-          } ]);
+            expected: ['object with property "name"']
+          }]);
       });
 
       it('reports missing property', function() {
-        var data = { other: true };
+        var data = {other: true};
         fvalid.validate(data, validator)
-          .should.eql([ {
+          .should.eql([{
             path: [],
             found: data,
-            expected: [ 'own property "name"' ]
-          } ]);
+            expected: ['own property "name"']
+          }]);
       });
 
       it('reports property not matching', function() {
-        var data = { name: false };
+        var data = {name: false};
         fvalid.validate(data, validator)
-          .should.eql([ {
-            path: [ 'name' ],
+          .should.eql([{
+            path: ['name'],
             found: data.name,
-            expected: [ 'true' ]
-          } ]);
+            expected: ['true']
+          }]);
       });
 
       describe('of nested properties', function() {
-        var validator = fvalid.ownProperty('alpha',
+        var validator = fvalid.ownProperty(
+          'alpha',
           fvalid.ownProperty('beta', function() {
             return true;
           })
@@ -84,11 +84,11 @@
             }
           };
           fvalid.validate(data, validator)
-            .should.eql([ {
-              path: [ 'alpha' ],
+            .should.eql([{
+              path: ['alpha'],
               found: data.alpha,
-              expected: [ 'own property "beta"' ]
-            } ]);
+              expected: ['own property "beta"']
+            }]);
           fvalid.valid(data, validator)
             .should.be.false;
         });
@@ -103,11 +103,11 @@
         it('rejects a non-object value', function() {
           var data = null;
           fvalid.validate(data, validator)
-            .should.eql([ {
+            .should.eql([{
               path: [],
               found: data,
-              expected: [ 'object with optional property "alpha"' ]
-            } ]);
+              expected: ['object with optional property "alpha"']
+            }]);
           fvalid.valid(data, validator)
             .should.be.false;
         });
@@ -121,11 +121,11 @@
         it('reports object expected', function() {
           var data = null;
           fvalid.validate(data, validator)
-            .should.eql([ {
+            .should.eql([{
               path: [],
               found: data,
-              expected: [ 'object with optional property "alpha"' ]
-            } ]);
+              expected: ['object with optional property "alpha"']
+            }]);
         });
 
         it('rejects object with a bad value', function() {
@@ -133,11 +133,11 @@
             alpha: 'INVALID'
           };
           fvalid.validate(data, validator)
-            .should.eql([ {
-              path: [ 'alpha' ],
+            .should.eql([{
+              path: ['alpha'],
               found: data.alpha,
-              expected: [ 'true' ]
-            } ]);
+              expected: ['true']
+            }]);
           fvalid.valid(data, validator)
             .should.be.false;
         });
@@ -147,18 +147,18 @@
         var validator = fvalid.onlyProperties('alpha');
 
         it('accepts valid inputs', function() {
-          fvalid.valid({ alpha: 1 }, validator)
+          fvalid.valid({alpha: 1}, validator)
             .should.be.true;
         });
 
         it('rejects null', function() {
           var data = null;
           fvalid.validate(data, validator)
-            .should.eql([ {
+            .should.eql([{
               path: [],
               found: data,
-              expected: [ 'object with only the property "alpha"' ]
-            } ]);
+              expected: ['object with only the property "alpha"']
+            }]);
           fvalid.valid(data, validator)
             .should.be.false;
         });
@@ -166,11 +166,11 @@
         it('rejects a string', function() {
           var data = 'string';
           fvalid.validate(data, validator)
-            .should.eql([ {
+            .should.eql([{
               path: [],
               found: data,
-              expected: [ 'object with only the property "alpha"' ]
-            } ]);
+              expected: ['object with only the property "alpha"']
+            }]);
           fvalid.valid(data, validator)
             .should.be.false;
         });
@@ -180,25 +180,25 @@
             null,
             fvalid.onlyProperties('alpha', 'beta')
           )
-            .should.eql([ {
+            .should.eql([{
               path: [],
               found: null,
               expected: [
                 'object with only the properties "alpha" and "beta"'
-              ]
-            } ]);
+             ]
+            }]);
           fvalid.validate(
             null,
             fvalid.onlyProperties('alpha', 'beta', 'kappa')
           )
-            .should.eql([ {
+            .should.eql([{
               path: [],
               found: null,
               expected: [
                 'object with only the properties ' +
                 '"alpha", "beta", and "kappa"'
-              ]
-            } ]);
+             ]
+            }]);
         });
 
         it('does not check that properties exist', function() {
@@ -213,15 +213,15 @@
             kappa: 3
           };
           fvalid.validate(data, validator)
-            .should.eql([ {
-              path: [ 'beta' ],
+            .should.eql([{
+              path: ['beta'],
               found: data.beta,
-              expected: [ 'no property "beta"' ]
+              expected: ['no property "beta"']
             }, {
-              path: [ 'kappa' ],
+              path: ['kappa'],
               found: data.kappa,
-              expected: [ 'no property "kappa"' ]
-            } ]);
+              expected: ['no property "kappa"']
+            }]);
         });
       });
     });

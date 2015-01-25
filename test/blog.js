@@ -102,8 +102,8 @@
         var data = {
           author: 'John',
           date: '2015-01-01',
-          tags: [ 'TESTING', '@JOAN' ],
-          text: [ 'This is a valid post' ]
+          tags: ['TESTING', '@JOAN'],
+          text: ['This is a valid post']
         };
         fvalid.validate(data, validators.post)
           .should.be.empty;
@@ -118,17 +118,17 @@
         fvalid.validate(data, validators.post)
           .should.eql([
             {
-              path: [ 'author' ],
+              path: ['author'],
               found: '',
-              expected: [ 'non-empty string' ]
+              expected: ['non-empty string']
             }, {
-              path: [ 'date' ],
+              path: ['date'],
               found: '2015-01-32',
-              expected: [ 'valid date' ]
+              expected: ['valid date']
             }, {
               path: [],
               found: data,
-              expected: [ 'own property "tags"' ]
+              expected: ['own property "tags"']
             }
           ]);
       });

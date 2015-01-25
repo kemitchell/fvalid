@@ -17,7 +17,7 @@
 
     it('return of more than one expectation string', function() {
       var validator = function() {
-        return [ 'a', 'b' ];
+        return ['a', 'b'];
       };
       var expectation = 'validator function failed ' +
         'to return true or string';

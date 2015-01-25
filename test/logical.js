@@ -31,11 +31,11 @@
       it('rejects "arm" with one error', function() {
         var data = 'arm';
         fvalid.validate(data, validator)
-          .should.eql([ {
+          .should.eql([{
             path: [],
             found: data,
-            expected: [ 'string containing "b"' ]
-          } ]);
+            expected: ['string containing "b"']
+          }]);
         fvalid.valid(data, validator)
           .should.be.false;
       });
@@ -43,14 +43,14 @@
       it('rejects "gun" with two errors', function() {
         var data = 'gun';
         fvalid.validate(data, validator)
-          .should.eql([ {
+          .should.eql([{
             path: [],
             found: data,
             expected: [
               'string containing "a"',
               'string containing "b"'
             ]
-          } ]);
+          }]);
         fvalid.valid(data, validator)
           .should.be.false;
       });
@@ -72,17 +72,17 @@
       it('rejects "dog" with an error', function() {
         var data = 'dog';
         fvalid.validate(data, validator)
-          .should.eql([ {
+          .should.eql([{
             path: [],
             found: data,
-            expected: [ {
+            expected: [{
               any: [
                 'string containing "a"',
                 'string containing "b"',
                 'string containing "c"'
               ]
-            } ]
-          } ]);
+            }]
+          }]);
         fvalid.valid(data, validator)
           .should.be.false;
       });
@@ -127,11 +127,11 @@
 
       it('produces structured errors', function() {
         var value = null;
-        fvalid.validate({ prop: value }, validator)
-          .should.eql([ {
-            path: [ 'prop' ],
+        fvalid.validate({prop: value}, validator)
+          .should.eql([{
+            path: ['prop'],
             found: value,
-            expected: [ {
+            expected: [{
               any: [
                 '1',
                 'true',
@@ -140,9 +140,9 @@
                   'greater than 3'
                 ]
               ]
-            } ]
-          } ]);
-        fvalid.valid({ prop: value }, validator)
+            }]
+          }]);
+        fvalid.valid({prop: value}, validator)
           .should.be.false;
       });
     });

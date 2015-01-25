@@ -21,8 +21,8 @@
     // or a string.
     //
     // A _path_ is an array of string and number indices identifying a
-    // value within a nested JavaScript data structure. `[ 'addresses',
-    // 2 ]` is the path for the third item of the array value of the
+    // value within a nested JavaScript data structure. `['addresses',
+    // 2]` is the path for the third item of the array value of the
     // 'addresses' property of an object being validated.
 
     // Utility Functions
@@ -74,11 +74,11 @@
           } else {
             // Create an error object from a string indicating what was
             // expected at this path in the data being validated.
-            return [ {
+            return [{
               path: path,
               found: input,
-              expected: [ returned ]
-            } ];
+              expected: [returned]
+            }];
           }
 
         // `returned` is a list of errors.
@@ -519,16 +519,16 @@
 
                 // A conjunction
                 } else {
-                  return output.concat([ expectation ]);
+                  return output.concat([expectation]);
                 }
               });
 
             // Join those expectation messages into one.
-            return [ {
+            return [{
               path: path,
               found: input,
-              expected: [ { any: expectations } ]
-            } ];
+              expected: [{any: expectations}]
+            }];
           }
         }
       };
